@@ -65,7 +65,7 @@ function createRoot(nodes) {
   return {
     type: NodeTypes.ROOT,
     children: nodes,
-    loc: {}
+    // loc: getLoc(con)
   }
 }
 
@@ -166,10 +166,12 @@ function parseChildren(context: ParserContext) {
 
 function parseKey(context: ParserContext) {
   const match = /^"([a-z0-9][^"]*)/i.exec(context.source);
+  console.log(match);
   advanceBy(context, match[0].length + 1)
   return {
     type: NodeTypes.KEY,
-    content: match[1]
+    content: match[1],
+    // loc: getLoc(context, )
   }
 }
 
@@ -183,13 +185,14 @@ function parseValue(context: ParserContext) {
     type = ValueTypes.STRING;
     const match = /^"(.[^"]*)/i.exec(context.source)
     value = match[1];
-    advanceBy(context, match[0].length + 1)
+    advanceBy(context, match[0].length + 1);
   } else if (s[0] === '{') {
     type = ValueTypes.OBJECT;
     value = parseChildren(context);
   } else if (s[0] === '[') {
     type = ValueTypes.ARRAY;
-    value = parseChildren(context);
+    advanceBy(context, 1);
+    value = parseArray(context);
   }
   return {
     type: NodeTypes.VALUE,
@@ -198,4 +201,31 @@ function parseValue(context: ParserContext) {
       value
     }
   }
+}
+
+function parseArray(context: ParserContext) {
+  advanceSpaces(context);
+  const s = context.source;
+  let nodes = [];
+  if (s[0] === '"') {
+    // ["a", "b"]
+    const match = /^".[^"]*/.exec(s);
+    if (match && match[0]) {
+      nodes.push({
+        type: 'string',
+        content: match[1]
+      });
+      advanceBy(context, match[0].length);
+    }
+    console.log(match);
+  } else if (s === '{') {
+    nodes = parseChildren(context);
+  }
+  advanceSpaces(context);
+  if (context.source[0] === ',') {
+    advanceBy(context, 1);
+    nodes = nodes.concat(parseArray(context));
+  }
+  advanceSpaces(context);
+  return nodes;
 }

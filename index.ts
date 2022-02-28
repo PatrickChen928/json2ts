@@ -26,5 +26,5 @@ const input = `{
   }
 }`;
 
-console.log(JSON.stringify(parse(`{"status":  {"aaa": "bbb"}}`)));
+console.log(JSON.stringify(parse(`{"status":  ["aaa", "bbb"]}`)));
 
