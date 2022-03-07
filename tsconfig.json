@@ -3,6 +3,7 @@
     "target": "ESNext",
     "module": "CommonJS",
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "outDir": "./lib"
   }
 }

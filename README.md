@@ -19,17 +19,17 @@ json-parser > transform > codegen
   {key: 'b', value: [
     {key: 'c', value: '123', type: 'String'}
   ], type: 'Object'}
-  {key: 'd', value: [1, 2, 3], type: 'Array'},
+  {key: 'd', value: [1, 2, {e: '222'}], type: 'Array'},
 ]
 
 =>
 
 {
-  a: Number,
+  a: number,
   b: {
-    c: String
+    c: string
   },
-  d: Array
+  d: Array<number | {e: string}>;
 }
 
 ```

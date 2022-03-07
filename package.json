@@ -4,8 +4,9 @@
   "description": "把json转换成ts配置形式",
   "main": "index.js",
   "scripts": {
-    "dev": "tsc && node index.js",
-    "prepublish": "tsc"
+    "test": "node tests/index.js",
+    "build": "tsc",
+    "prepublish": "npm run build"
   },
   "files": [
     "index.js",

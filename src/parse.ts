@@ -107,38 +107,14 @@ function advanceSpaces(context: ParserContext) {
   }
 }
 
-/**
- * to ast 
- * {a: 'a' // a, b: []} 
- * => 
- * {type: 0, children: [
- *  {
- *    name: 'a', 
- *    comment: '',
- *    type: 'string'
- *    value: 'a'
- *  },
- *  {
- *    name: 'b', 
- *    comment: '',
- *    type: 'array'
- *    value: []
- *  }
- * ]}
- * 
- * @param input 
- * @param options 
- * @returns 
- */
-export function parse(input: string, options?: Record<string, unknown>) {
-  const context = createContext(input, options);
-  return createRoot(parseChildren(context));
-}
-
 function parseData(context: ParserContext) {
   let key = parseKey(context);
   let { value, type } = parseValue(context);
   advanceSpaces(context);
+  if (context.source[0] === ',') {
+    advanceBy(context, 1);
+    advanceSpaces(context);
+  }
   return {key, value, type, loc: getCursor(context)};
 }
 
@@ -154,7 +130,9 @@ function parseChildren(context: ParserContext) {
     } else if (s[0] === '}') {
       advanceBy(context, 1);
       advanceSpaces(context);
+      return nodes;
     } else {
+      // console.log(context)
       nodes.push(parseData(context));
     }
     
@@ -220,7 +198,6 @@ function parseValue(context: ParserContext) {
     advanceBy(context, 1);
     advanceSpaces(context);
   }
-  console.log(context)
   return {
     value,
     type
@@ -241,7 +218,6 @@ function parseArray(context: ParserContext) {
       });
       advanceBy(context, match[0].length);
     }
-    console.log(match);
   } else if (s === '{') {
     nodes = parseChildren(context);
   }
@@ -252,4 +228,32 @@ function parseArray(context: ParserContext) {
   }
   advanceSpaces(context);
   return nodes;
+}
+
+/**
+ * to ast 
+ * {a: 'a' // a, b: []} 
+ * => 
+ * {type: 0, children: [
+ *  {
+ *    name: 'a', 
+ *    comment: '',
+ *    type: 'string'
+ *    value: 'a'
+ *  },
+ *  {
+ *    name: 'b', 
+ *    comment: '',
+ *    type: 'array'
+ *    value: []
+ *  }
+ * ]}
+ * 
+ * @param input 
+ * @param options 
+ * @returns 
+ */
+ export function parse(input: string, options?: Record<string, unknown>) {
+  const context = createContext(input, options);
+  return createRoot(parseChildren(context));
 }
