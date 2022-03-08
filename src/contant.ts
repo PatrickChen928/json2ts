@@ -1,0 +1,1 @@
+export const ARRAY_ITEM = "$ARRAY_ITEM$";

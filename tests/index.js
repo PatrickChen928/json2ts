@@ -9,12 +9,15 @@ let json1 = `{
         }
     },
     "data": {
+        "arr": [12, '13', {
+            "arrName": [22]
+        }],
         "name": 222, 
         "value": '333'
     }
 }`
-// console.log(JSON.stringify(parse(json1)));
-assert.deepEqual(parse(json1), {"type":0,"children":[{"key":"status","value":[{"key":"name","value":"222","type":"Number","loc":{"start":{"offset":26,"column":9,"line":3},"end":{"offset":48,"column":9,"line":4},"source":"\"name\": 222, \n        "}},{"key":"value","value":[{"key":"key","value":"value","type":"String","loc":{"start":{"offset":71,"column":13,"line":5},"end":{"offset":94,"column":9,"line":6},"source":"\"key\": \"value\"\n        "}}],"type":"Object","loc":{"start":{"offset":48,"column":9,"line":4},"end":{"offset":100,"column":5,"line":7},"source":"\"value\": {\n            \"key\": \"value\"\n        }\n    "}}],"type":"Object","loc":{"start":{"offset":6,"column":5,"line":2},"end":{"offset":107,"column":5,"line":8},"source":"\"status\": {\n        \"name\": 222, \n        \"value\": {\n            \"key\": \"value\"\n        }\n    },\n    "}},{"key":"data","value":[{"key":"name","value":"222","type":"Number","loc":{"start":{"offset":125,"column":9,"line":9},"end":{"offset":147,"column":9,"line":10},"source":"\"name\": 222, \n        "}},{"key":"value","value":"333","type":"String","loc":{"start":{"offset":147,"column":9,"line":10},"end":{"offset":166,"column":5,"line":11},"source":"\"value\": '333'\n    "}}],"type":"Object","loc":{"start":{"offset":107,"column":5,"line":8},"end":{"offset":168,"column":1,"line":12},"source":"\"data\": {\n        \"name\": 222, \n        \"value\": '333'\n    }\n"}}]})
+console.log(JSON.stringify(parse(json1)));
+// assert.deepEqual(parse(json1), {"type":0,"children":[{"key":"status","value":[{"key":"name","value":"222","type":"Number","loc":{"start":{"offset":26,"column":9,"line":3},"end":{"offset":48,"column":9,"line":4},"source":"\"name\": 222, \n        "}},{"key":"value","value":[{"key":"key","value":"value","type":"String","loc":{"start":{"offset":71,"column":13,"line":5},"end":{"offset":94,"column":9,"line":6},"source":"\"key\": \"value\"\n        "}}],"type":"Object","loc":{"start":{"offset":48,"column":9,"line":4},"end":{"offset":100,"column":5,"line":7},"source":"\"value\": {\n            \"key\": \"value\"\n        }\n    "}}],"type":"Object","loc":{"start":{"offset":6,"column":5,"line":2},"end":{"offset":107,"column":5,"line":8},"source":"\"status\": {\n        \"name\": 222, \n        \"value\": {\n            \"key\": \"value\"\n        }\n    },\n    "}},{"key":"data","value":[{"key":"name","value":"222","type":"Number","loc":{"start":{"offset":125,"column":9,"line":9},"end":{"offset":147,"column":9,"line":10},"source":"\"name\": 222, \n        "}},{"key":"value","value":"333","type":"String","loc":{"start":{"offset":147,"column":9,"line":10},"end":{"offset":166,"column":5,"line":11},"source":"\"value\": '333'\n    "}}],"type":"Object","loc":{"start":{"offset":107,"column":5,"line":8},"end":{"offset":168,"column":1,"line":12},"source":"\"data\": {\n        \"name\": 222, \n        \"value\": '333'\n    }\n"}}]})
 
 // console.log(JSON.stringify(parse(`{
 //     "status": {

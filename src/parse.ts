@@ -1,3 +1,4 @@
+import { ARRAY_ITEM } from './contant';
 
 const enum NodeTypes {
   ROOT,
@@ -107,10 +108,10 @@ function advanceSpaces(context: ParserContext) {
   }
 }
 
-function parseData(context: ParserContext) {
+function parseData(context: ParserContext, keyName?: string) {
   advanceSpaces(context);
   let start = getCursor(context);
-  let key = parseKey(context);
+  let key = keyName || parseKey(context);
   let { value, type } = parseValue(context);
   advanceSpaces(context);
   if (context.source[0] === ',') {
@@ -123,7 +124,6 @@ function parseData(context: ParserContext) {
 function parseChildren(context: ParserContext) {
   const nodes = [];
   while(!isEnd(context)) {
-    let node = null;
     const s = context.source;
     // 新的一行
     if (s[0] === '{') {
@@ -134,15 +134,7 @@ function parseChildren(context: ParserContext) {
       advanceSpaces(context);
       return nodes;
     } else {
-      // console.log(context)
       nodes.push(parseData(context));
-    }
-    
-    if (!node) {
-      node = advanceSpaces(context);
-    }
-    if (node) {
-      nodes.push(node);
     }
   }
   return nodes;
@@ -169,8 +161,7 @@ function parseNumber(context: ParserContext) {
 
 function parseString(context: ParserContext) {
   const match = /^["|']([^"|']*)/i.exec(context.source);
-  advanceBy(context, match[0].length);
-  advanceBy(context, 1);
+  advanceBy(context, match[0].length + 1);
   return match[1];
 }
 
@@ -184,11 +175,9 @@ function parseValue(context: ParserContext) {
   } else if (code === '"' || code === '\'') {
     value = parseString(context);
     type = 'String';
-    advanceBy(context, 1);
   } else if (code === '[') {
-    value = parseChildren(context);
-    advanceSpaces(context);
     advanceBy(context, 1);
+    value = parseArray(context);
     type = 'Array';
   } else if (code === '{') {
     value = parseChildren(context);
@@ -206,28 +195,14 @@ function parseValue(context: ParserContext) {
 }
 
 function parseArray(context: ParserContext) {
-  advanceSpaces(context);
-  const s = context.source;
-  let nodes = [];
-  if (s[0] === '"') {
-    // ["a", "b"]
-    const match = /^".[^"]*/.exec(s);
-    if (match && match[0]) {
-      nodes.push({
-        type: 'string',
-        content: match[1]
-      });
-      advanceBy(context, match[0].length);
+  const nodes = [];
+  while(!isEnd(context)) {
+    nodes.push(parseData(context, ARRAY_ITEM))
+    if (context.source[0] === ']') {
+      advanceBy(context, 1);
+      return nodes;
     }
-  } else if (s === '{') {
-    nodes = parseChildren(context);
   }
-  advanceSpaces(context);
-  if (context.source[0] === ',') {
-    advanceBy(context, 1);
-    nodes = nodes.concat(parseArray(context));
-  }
-  advanceSpaces(context);
   return nodes;
 }
 
