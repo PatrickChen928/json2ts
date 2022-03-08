@@ -108,6 +108,8 @@ function advanceSpaces(context: ParserContext) {
 }
 
 function parseData(context: ParserContext) {
+  advanceSpaces(context);
+  let start = getCursor(context);
   let key = parseKey(context);
   let { value, type } = parseValue(context);
   advanceSpaces(context);
@@ -115,7 +117,7 @@ function parseData(context: ParserContext) {
     advanceBy(context, 1);
     advanceSpaces(context);
   }
-  return {key, value, type, loc: getCursor(context)};
+  return {key, value, type, loc: getLoc(context, start)};
 }
 
 function parseChildren(context: ParserContext) {
@@ -147,7 +149,6 @@ function parseChildren(context: ParserContext) {
 }
 
 function parseKey(context: ParserContext) {
-  advanceSpaces(context);
   const match = /^"([a-z0-9][^"]*)/i.exec(context.source);
   advanceBy(context, match[0].length + 1);
   advanceSpaces(context);
