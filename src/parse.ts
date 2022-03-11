@@ -1,4 +1,4 @@
-import { ARRAY_ITEM } from './contant';
+import { ARRAY_ITEM, COMMENT_KEY, LAST_COMMENT, NEXT_COMMENT } from './contant';
 
 const enum NodeTypes {
   ROOT,
@@ -28,13 +28,17 @@ interface ParserContext {
   column: number
 }
 
+type LocType = {
+  start: Position;
+  end: Position;
+  source: string;
+}
+
 type AstChildNode = {
-  // type: '',
-  // loc
-  // value: {
-  //   content: 
-  //   type: 
-  // }
+  key: string;
+  value: string | AstChildNode
+  type: string;
+  loc: LocType;
 }
 
 function getCursor(context: ParserContext) {
@@ -42,7 +46,7 @@ function getCursor(context: ParserContext) {
   return { offset, column, line };
 }
 
-function getLoc(context: ParserContext, start: Position, end?: Position) {
+function getLoc(context: ParserContext, start: Position, end?: Position): LocType {
   end = end || getCursor(context);
   return {
     start,
@@ -110,29 +114,47 @@ function advanceSpaces(context: ParserContext) {
 
 function parseData(context: ParserContext, keyName?: string) {
   advanceSpaces(context);
-  let start = getCursor(context);
-  let key = keyName || parseKey(context);
-  let { value, type } = parseValue(context);
+  const start = getCursor(context);
+  const key = keyName || parseKey(context);
+  const { value, type } = parseValue(context);
+  const loc = getLoc(context, start);
   advanceSpaces(context);
   if (context.source[0] === ',') {
     advanceBy(context, 1);
     advanceSpaces(context);
   }
-  return {key, value, type, loc: getLoc(context, start)};
+  return {key, value, type, loc: loc};
 }
-
+/**
+ * 解析 {} 里面的内容
+ * @param context 
+ * @returns 
+ */
 function parseChildren(context: ParserContext) {
-  const nodes = [];
+  const nodes: AstChildNode[] = [];
   while(!isEnd(context)) {
+    advanceSpaces(context);
     const s = context.source;
     // 新的一行
     if (s[0] === '{') {
       advanceBy(context, 1);
-      nodes.push(parseData(context));
     } else if (s[0] === '}') {
       advanceBy(context, 1);
       advanceSpaces(context);
       return nodes;
+    } else if (s[0] === '/') {
+      if (s[1] === '/') {
+        const lastNode = nodes[nodes.length - 1];
+        let lastLine = -1;
+        if (lastNode) {
+          lastLine = lastNode.loc.end.line;
+        }
+        const currLine = getCursor(context).line;
+        nodes.push(parseComment(context, currLine === lastLine));
+        advanceSpaces(context);
+      } else {
+        throw new Error('错误的备注')
+      }
     } else {
       nodes.push(parseData(context));
     }
@@ -197,13 +219,22 @@ function parseValue(context: ParserContext) {
 function parseArray(context: ParserContext) {
   const nodes = [];
   while(!isEnd(context)) {
-    nodes.push(parseData(context, ARRAY_ITEM))
+    nodes.push(parseData(context, ARRAY_ITEM));
     if (context.source[0] === ']') {
       advanceBy(context, 1);
       return nodes;
     }
   }
   return nodes;
+}
+
+function parseComment(context: ParserContext, isLast: boolean) {
+  const match = /^\/\/\s*(.[^\t\n\r\f]*)/i.exec(context.source);
+  const start = getCursor(context);
+  const comment = match[1];
+  const key = isLast ? LAST_COMMENT : NEXT_COMMENT;
+  advanceBy(context, match[0].length);
+  return {key, value: comment, type: COMMENT_KEY, loc: getLoc(context, start)};
 }
 
 /**

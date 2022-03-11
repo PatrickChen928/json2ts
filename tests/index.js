@@ -3,12 +3,13 @@ const { parse } = require('../lib/index.js');
 
 let json1 = `{
     "status": {
-        "name": 222, 
+        "name": 222,  // 这是一个名字
         "value": {
             "key": "value"
         }
     },
     "data": {
+        // 这是一个数组
         "arr": [12, '13', {
             "arrName": [22]
         }],
