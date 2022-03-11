@@ -1,8 +1,17 @@
-## Json2ts
+# Json2ts
 
 一个`编译原理`的实践项目，解析Json，输出 TS 类型
 
 json-parser > transform > codegen
+
+## Features
+
+- 支持层级嵌套
+- 支持数组类型解析
+- 支持注释解析
+- 支持key值无引号模式
+
+## demo 
 
 ```js
 
@@ -35,10 +44,3 @@ json-parser > transform > codegen
 }
 
 ```
-
-## Features
-
-- 支持层级嵌套
-- 支持数组类型解析
-- 支持注释解析
-- 支持key值无引号模式

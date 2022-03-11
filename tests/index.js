@@ -2,15 +2,16 @@ const assert = require('assert');
 const { parse } = require('../lib/index.js');
 
 let json1 = `{
-    "status": {
-        "name": 222,  // 这是一个名字
+    status: {
+        'name': 222,  //这是一个名字
         "value": {
             "key": "value"
         }
     },
+    //   这是data数据  
     "data": {
         // 这是一个数组
-        "arr": [12, '13', {
+        arr: [12, '13', {
             "arrName": [22]
         }],
         "name": 222, 

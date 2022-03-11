@@ -163,16 +163,15 @@ function parseChildren(context: ParserContext) {
 }
 
 function parseKey(context: ParserContext) {
-  const match = /^"([a-z0-9][^"]*)/i.exec(context.source);
+  const match = /^["|']?([a-z0-9][^:]*)/i.exec(context.source);
   advanceBy(context, match[0].length + 1);
   advanceSpaces(context);
-  if (context.source[0] === ':') {
-    advanceBy(context, 1);
-    advanceSpaces(context);
-  } else {
-    console.error('key will with :');
+  const value = match[1];
+  if (/["|']$/.test(value)) {
+    // 最后的引号
+    return value.slice(0, -1);
   }
-  return match[1];
+  return value;
 }
 
 function parseNumber(context: ParserContext) {
@@ -205,11 +204,6 @@ function parseValue(context: ParserContext) {
     value = parseChildren(context);
     type = 'Object';
   }
-  advanceSpaces(context);
-  if (context.source[0] === ',') {
-    advanceBy(context, 1);
-    advanceSpaces(context);
-  }
   return {
     value,
     type
@@ -238,27 +232,10 @@ function parseComment(context: ParserContext, isLast: boolean) {
 }
 
 /**
- * to ast 
- * {a: 'a' // a, b: []} 
- * => 
- * {type: 0, children: [
- *  {
- *    name: 'a', 
- *    comment: '',
- *    type: 'string'
- *    value: 'a'
- *  },
- *  {
- *    name: 'b', 
- *    comment: '',
- *    type: 'array'
- *    value: []
- *  }
- * ]}
- * 
+ * parse to ast 
  * @param input 
  * @param options 
- * @returns 
+ * @returns ast
  */
  export function parse(input: string, options?: Record<string, unknown>) {
   const context = createContext(input, options);
