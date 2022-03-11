@@ -10,10 +10,7 @@
     "prepublish": "npm run build"
   },
   "files": [
-    "index.js",
-    "parse.js",
-    "transform.js",
-    "codegen.js"
+    "lib/"
   ],
   "author": "cp786156072@163.com",
   "license": "ISC"
