@@ -1,5 +1,5 @@
+import type { ParserContext, Position, LocType, AstChildNode } from './types';
 import { ARRAY_ITEM, COMMENT_KEY, LAST_COMMENT, NEXT_COMMENT } from './contant';
-import type { ParserContext, Position, LocType, AstChildNode, Ast } from './types';
 
 function getCursor(context: ParserContext) {
   const { offset, column, line } = context;
@@ -26,10 +26,11 @@ function createContext(content: string, options?: Record<string, unknown>): Pars
   }
 }
 
-function createRoot(nodes: AstChildNode[]): Ast {
+function createRoot(nodes: AstChildNode[]): AstChildNode {
   return {
-    type: 'root',
-    children: nodes
+    key: 'root',
+    type: 'Root',
+    value: nodes
   }
 }
 
@@ -197,7 +198,7 @@ function parseComment(context: ParserContext, isLast: boolean) {
  * @param options 
  * @returns ast
  */
- export function parse(input: string, options?: Record<string, unknown>): Ast {
+ export function parse(input: string, options?: Record<string, unknown>): AstChildNode {
   const context = createContext(input, options);
   return createRoot(parseChildren(context));
 }

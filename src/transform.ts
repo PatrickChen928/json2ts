@@ -1,11 +1,43 @@
+import type { AstChildNode, Visiter } from './types';
+import { isArray } from './utils';
 
+function traverseNode(nodes: AstChildNode[], parent: AstChildNode, visiter: Visiter) {
+  nodes.forEach(node => {
+    let visit = visiter[node.type];
+    if (visit) {
+      visit.entry && visit.entry(node, parent);
+    }
+    if (isArray(node.value)) {
+      traverseNode(node.value, node, visiter);
+    }
+    if (visit) {
+      visit.exit && visit.exit(node, parent);
+    }
+  })
+}
 
-function traverser(ast, visiter) {
-  // if ()
+export function traverser(ast: AstChildNode, visiter: Visiter) {
+  let root = visiter.Root;
+  if (root) {
+    root.entry && root.entry(ast, null);
+  }
+  traverseNode((ast.value as AstChildNode[]), ast, visiter);
+  if (root) {
+    root.exit && root.exit(ast, null);
+  }
 }
 
 
 
-export function transform() {
-
+export function transform(ast: AstChildNode) {
+  traverser(ast, {
+    'String': {
+      entry(node, parent) {
+        console.log(node.key, parent.key, 'entry');
+      },
+      exit(node, parent) {
+        console.log(node.key, parent.key, 'exit');
+      }
+    }
+  });
 }

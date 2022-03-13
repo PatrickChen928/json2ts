@@ -21,13 +21,15 @@ export type LocType = {
 
 export type AstChildNode = {
   key: string;
-  value: string | AstChildNode
+  value: string | AstChildNode[]
   type: string;
-  loc: LocType;
+  loc?: LocType;
+  typeList?: Array<string | Object>;
 }
 
-export type Ast = {
-  type: string;
-  children: AstChildNode[];
-  typeList?: Array<string | Object>;
+export type Visiter = {
+  [key: string]: {
+    entry?: (node: AstChildNode, parent: AstChildNode | null) => void;
+    exit?: (node: AstChildNode, parent: AstChildNode | null) => void;
+  }
 }
