@@ -1,7 +1,7 @@
 {
   "name": "json2ts",
   "version": "0.0.1",
-  "description": "把json转换成ts配置形式",
+  "description": "把json转换成ts类型",
   "main": "index.js",
   "scripts": {
     "dev": "npm run build && npm run test",

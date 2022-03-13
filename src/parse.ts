@@ -1,45 +1,5 @@
 import { ARRAY_ITEM, COMMENT_KEY, LAST_COMMENT, NEXT_COMMENT } from './contant';
-
-const enum NodeTypes {
-  ROOT,
-  KEY,
-  VALUE,
-  COMMENT,
-}
-
-const enum ValueTypes { 
-  STRING,
-  ARRAY,
-  OBJECT
-}
-
-interface Position {
-  offset: number // from start of file
-  line: number
-  column: number
-}
-
-interface ParserContext {
-  options: Record<string, unknown>
-  readonly originalSource: string
-  source: string
-  offset: number
-  line: number
-  column: number
-}
-
-type LocType = {
-  start: Position;
-  end: Position;
-  source: string;
-}
-
-type AstChildNode = {
-  key: string;
-  value: string | AstChildNode
-  type: string;
-  loc: LocType;
-}
+import type { ParserContext, Position, LocType, AstChildNode, Ast } from './types';
 
 function getCursor(context: ParserContext) {
   const { offset, column, line } = context;
@@ -66,9 +26,9 @@ function createContext(content: string, options?: Record<string, unknown>): Pars
   }
 }
 
-function createRoot(nodes) {
+function createRoot(nodes: AstChildNode[]): Ast {
   return {
-    type: NodeTypes.ROOT,
+    type: 'root',
     children: nodes
   }
 }
@@ -237,7 +197,7 @@ function parseComment(context: ParserContext, isLast: boolean) {
  * @param options 
  * @returns ast
  */
- export function parse(input: string, options?: Record<string, unknown>) {
+ export function parse(input: string, options?: Record<string, unknown>): Ast {
   const context = createContext(input, options);
   return createRoot(parseChildren(context));
 }
