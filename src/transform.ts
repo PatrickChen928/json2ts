@@ -25,12 +25,13 @@ export function traverser(ast: AstChildNode, visiter: Visiter) {
   if (root) {
     root.exit && root.exit(ast, null);
   }
+  return ast;
 }
 
 
 
 export function transform(ast: AstChildNode) {
-  traverser(ast, {
+  return traverser(ast, {
     'String': {
       entry(node, parent) {
         console.log(node.key, parent.key, 'entry');
