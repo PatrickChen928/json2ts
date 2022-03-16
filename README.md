@@ -8,7 +8,7 @@ json-parser > transform > codegen
 
 - 支持层级嵌套
 - 支持数组类型解析
-- 支持注释解析
+- 支持行内和换行的注释解析
 - 支持key值无引号模式
 
 ## demo 
