@@ -1,4 +1,4 @@
-import type { AstChildNode, Visiter } from './types';
+import type { AstChildNode, Visiter, CompileOptions } from './types';
 import { 
   ARRAY_ITEM, 
   ARRAY_TYPE, 
@@ -35,7 +35,7 @@ export function traverser(ast: AstChildNode, visiter: Visiter) {
   return ast;
 }
 
-export function transform(ast: AstChildNode) {
+export function transform(ast: AstChildNode, options: CompileOptions) {
   traverser(ast, {
     [STRING_TYPE]: {
       entry(node, parent) {

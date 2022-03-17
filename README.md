@@ -44,3 +44,8 @@ json-parser > transform > codegen
 }
 
 ```
+
+## TODO
+
+- [ ] 类型复用、继承
+- [ ] required个性化

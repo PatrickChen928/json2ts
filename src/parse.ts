@@ -1,4 +1,4 @@
-import type { ParserContext, Position, LocType, AstChildNode } from './types';
+import type { ParserContext, Position, LocType, AstChildNode, CompileOptions } from './types';
 import { 
   ROOT_TYPE,
   ARRAY_TYPE, 
@@ -223,7 +223,7 @@ function parseComment(context: ParserContext, isLast: boolean) {
  * @param options 
  * @returns ast
  */
- export function parse(input: string, options?: Record<string, unknown>): AstChildNode {
+ export function parse(input: string, options?: CompileOptions): AstChildNode {
   const context = createContext(input, options);
   return createRoot(parseChildren(context));
 }

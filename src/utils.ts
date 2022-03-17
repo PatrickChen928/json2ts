@@ -5,3 +5,7 @@ function objectToString(o: any) {
 export function isArray(value: any): value is Array<any> {
   return typeof value === 'object' && objectToString(value).slice(8, -1) === 'Array';
 }
+
+export function isObject(value: any): value is Record<string, any> {
+  return typeof value === 'object' && objectToString(value).slice(8, -1) === 'Object';
+}

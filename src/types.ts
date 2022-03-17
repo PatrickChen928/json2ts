@@ -1,10 +1,17 @@
-export interface Position {
+export type CompileOptions = {
+  spiltType?: boolean;
+  parseArray?: boolean;
+  required?: boolean;
+  semicolon?: boolean;
+}
+
+export type Position = {
   offset: number // from start of file
   line: number
   column: number
 }
 
-export interface ParserContext {
+export type ParserContext = {
   options: Record<string, unknown>
   readonly originalSource: string
   source: string
