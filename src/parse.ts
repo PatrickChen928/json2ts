@@ -124,15 +124,29 @@ function parseChildren(context: ParserContext) {
 }
 
 function parseKey(context: ParserContext) {
-  const match = /^["|']?([a-z0-9][^:]*)/i.exec(context.source);
+  const s = context.source[0];
+  let match = [];
+  // ([^:]*)
+  // "xxx" 类型的key
+  if (s === '"') {
+    match = /^"(.[^"]*)/i.exec(context.source);
+  } else if (s === `'`) {
+    // 'xxx' 类型的key
+    match = /^'(.[^']*)/i.exec(context.source);
+  } else {
+    // xxx:  类型的key
+    match = /(.[^:]*)/i.exec(context.source);
+    match[1] = match[1].trim();
+  }
+  // 去掉末尾的" 或 ' 或 :
   advanceBy(context, match[0].length + 1);
   advanceSpaces(context);
-  const value = match[1];
-  if (/["|']$/.test(value)) {
-    // 最后的引号
-    return value.slice(0, -1);
+  // 去掉 " 和 ' 后面的冒号
+  if (context.source[0] === ':') {
+    advanceBy(context, 1);
+    advanceSpaces(context);
   }
-  return value;
+  return match[1];
 }
 
 function parseNumber(context: ParserContext) {

@@ -7,7 +7,7 @@ json-parser > transform > codegen
 ## Features
 
 - 支持层级嵌套
-- 支持数组类型解析
+- 支持数组解析
 - 支持行内和换行的注释解析
 - 支持key值无引号模式
 
@@ -20,7 +20,7 @@ json-parser > transform > codegen
   "b": {
     "c": "123"
   },
-  "d": [1, 2, 3]
+  d: [1, 2, 3]
 } 
 
 =>
