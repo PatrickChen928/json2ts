@@ -1,5 +1,16 @@
 import type { ParserContext, Position, LocType, AstChildNode } from './types';
-import { ARRAY_ITEM, COMMENT_KEY, LAST_COMMENT, NEXT_COMMENT } from './contant';
+import { 
+  ROOT_TYPE,
+  ARRAY_TYPE, 
+  STRING_TYPE, 
+  NUMBER_TYPE, 
+  OBJECT_TYPE ,
+  ROOT_KEY,
+  ARRAY_ITEM, 
+  COMMENT_KEY, 
+  LAST_COMMENT, 
+  NEXT_COMMENT
+} from './contant';
 
 function getCursor(context: ParserContext) {
   const { offset, column, line } = context;
@@ -28,8 +39,8 @@ function createContext(content: string, options?: Record<string, unknown>): Pars
 
 function createRoot(nodes: AstChildNode[]): AstChildNode {
   return {
-    key: 'root',
-    type: 'Root',
+    key: ROOT_KEY,
+    type: ROOT_TYPE,
     value: nodes
   }
 }
@@ -167,17 +178,17 @@ function parseValue(context: ParserContext) {
   let code = context.source[0];
   if (/^[0-9]/.test(code)) {
     value = parseNumber(context);
-    type = 'Number';
+    type = NUMBER_TYPE;
   } else if (code === '"' || code === '\'') {
     value = parseString(context);
-    type = 'String';
+    type = STRING_TYPE;
   } else if (code === '[') {
     advanceBy(context, 1);
     value = parseArray(context);
-    type = 'Array';
+    type = ARRAY_TYPE;
   } else if (code === '{') {
     value = parseChildren(context);
-    type = 'Object';
+    type = OBJECT_TYPE;
   }
   return {
     value,

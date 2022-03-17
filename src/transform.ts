@@ -1,5 +1,11 @@
 import type { AstChildNode, Visiter } from './types';
-import { ARRAY_ITEM } from './contant';
+import { 
+  ARRAY_ITEM, 
+  ARRAY_TYPE, 
+  STRING_TYPE, 
+  NUMBER_TYPE, 
+  OBJECT_TYPE 
+} from './contant';
 import { isArray } from './utils';
 
 function traverseNode(nodes: AstChildNode[], parent: AstChildNode, visiter: Visiter) {
@@ -33,7 +39,7 @@ export function traverser(ast: AstChildNode, visiter: Visiter) {
 
 export function transform(ast: AstChildNode) {
   traverser(ast, {
-    'String': {
+    [STRING_TYPE]: {
       entry(node, parent) {
         if (node.key === ARRAY_ITEM) {
           parent.typeValue = parent.typeValue || [];
@@ -44,7 +50,7 @@ export function transform(ast: AstChildNode) {
         }
       }
     },
-    'Number': {
+    [NUMBER_TYPE]: {
       entry(node, parent) {
         if (node.key === ARRAY_ITEM) {
           parent.typeValue = parent.typeValue || [];
@@ -55,7 +61,7 @@ export function transform(ast: AstChildNode) {
         }
       }
     },
-    'Object': {
+    [OBJECT_TYPE]: {
       entry(node, parent) {
         if (node.key === ARRAY_ITEM) {
           parent.typeValue = parent.typeValue || [];
@@ -67,7 +73,7 @@ export function transform(ast: AstChildNode) {
         }
       }
     },
-    'Array': {
+    [ARRAY_TYPE]: {
       entry(node, parent) {
         if (node.key === ARRAY_ITEM) {
           parent.typeValue = parent.typeValue || [];
