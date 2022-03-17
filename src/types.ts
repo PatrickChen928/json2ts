@@ -24,8 +24,7 @@ export type AstChildNode = {
   value: string | AstChildNode[]
   type: string;
   loc?: LocType;
-  typeValue?: Object;
-  vars?: Object;
+  typeValue?: Record<string, string | Object> | Array<string | Object>;
 }
 
 export type Visiter = {

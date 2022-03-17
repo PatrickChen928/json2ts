@@ -1,4 +1,5 @@
 import type { AstChildNode, Visiter } from './types';
+import { ARRAY_ITEM } from './contant';
 import { isArray } from './utils';
 
 function traverseNode(nodes: AstChildNode[], parent: AstChildNode, visiter: Visiter) {
@@ -31,14 +32,53 @@ export function traverser(ast: AstChildNode, visiter: Visiter) {
 
 
 export function transform(ast: AstChildNode) {
-  return traverser(ast, {
+  traverser(ast, {
     'String': {
       entry(node, parent) {
-        console.log(node.key, parent.key, 'entry');
-      },
-      exit(node, parent) {
-        console.log(node.key, parent.key, 'exit');
+        if (node.key === ARRAY_ITEM) {
+          parent.typeValue = parent.typeValue || [];
+          (parent.typeValue as Array<string | Object>).push(node.type);
+        } else {
+          parent.typeValue = parent.typeValue || {};
+          parent.typeValue[node.key] = node.type;
+        }
+      }
+    },
+    'Number': {
+      entry(node, parent) {
+        if (node.key === ARRAY_ITEM) {
+          parent.typeValue = parent.typeValue || [];
+          (parent.typeValue as Array<string | Object>).push(node.type);
+        } else {
+          parent.typeValue = parent.typeValue || {};
+          parent.typeValue[node.key] = node.type;
+        }
+      }
+    },
+    'Object': {
+      entry(node, parent) {
+        if (node.key === ARRAY_ITEM) {
+          parent.typeValue = parent.typeValue || [];
+          node.typeValue = {};
+          (parent.typeValue as Array<string | Object>).push(node.typeValue);
+        } else {
+          parent.typeValue = parent.typeValue || {};
+          parent.typeValue[node.key] = node.typeValue = {};
+        }
+      }
+    },
+    'Array': {
+      entry(node, parent) {
+        if (node.key === ARRAY_ITEM) {
+          parent.typeValue = parent.typeValue || [];
+          node.typeValue = [];
+          (parent.typeValue as Array<string | Object>).push(node.typeValue);
+        } else {
+          parent.typeValue = parent.typeValue || {};
+          parent.typeValue[node.key] = node.typeValue = [];
+        }
       }
     }
   });
+  return ast;
 }
