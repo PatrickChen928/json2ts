@@ -1,9 +1,12 @@
-// const configs = [];
-// output.push({
-//   file: `packages/${name}/dist/${fn}.mjs`,
-//   format: 'es',
-// });
+import clear from 'rollup-plugin-clear';
 import esbuild from 'rollup-plugin-esbuild';
+import { getBabelOutputPlugin } from '@rollup/plugin-babel';
+import dts from 'rollup-plugin-dts';
+
+const useBabelPlugin = function(options = {}) {
+  return getBabelOutputPlugin({ presets: [['@babel/preset-env', options]] });
+} 
+
 const esbuildPlugin = esbuild({
   sourceMap: true,
   target: 'es2015'
@@ -18,55 +21,59 @@ const esbuildMinifer = (options) => {
   }
 }
 
-module.exports = {
-  input: 'src/index.ts',
-  output: [
-    {
-      file: 'dist/index.mjs',
-      format: 'es',
-      target: 'es2015'
-      // plugins: [
-      //   babel({
-      //     presets: [
-      //       [
-      //         '@babel/env',
-      //         {
-      //           useBuiltIns: 'usage',
-      //           corejs: 2,
-      //           bugfixes: true,
-      //         },
-      //       ],
-      //     ],
-      //     plugins: ['@babel/plugin-proposal-class-properties'],
-      //     babelrc: false,
-      //     exclude: [/\/core-js\//]
-      //   })
-      // ]
-    },
-    {
-      file: 'dist/index.cjs',
-      format: 'cjs',
-    },
-    {
-      file: `dist/index.iife.js`,
-      format: 'iife',
-      name: 'json2ts',
-      extend: true,
-    },
-    {
-      file: `dist/index.iife.min.js`,
-      format: 'iife',
-      name: 'json2ts',
-      extend: true,
-      plugins: [
-        esbuildMinifer({
-          minify: true,
-        }),
-      ],
-    },
-  ],
-
-  plugins: [
-    esbuildPlugin
-  ]
-}
+module.exports = [
+  {
+    input: 'src/index.ts',
+    output: [
+      {
+        file: 'dist/index.mjs',
+        format: 'es',
+        target: 'es2015',
+        plugins: [ useBabelPlugin() ]
+      },
+      {
+        file: 'dist/index.cjs',
+        format: 'cjs',
+        plugins: [ useBabelPlugin() ]
+      },
+      {
+        file: `dist/index.umd.js`,
+        name: 'json2ts',
+        extend: true,
+        plugins: [ useBabelPlugin({ modules: 'umd' }), ]
+      },
+      {
+        file: `dist/index.umd.min.js`,
+        name: 'json2ts',
+        extend: true,
+        plugins: [
+          useBabelPlugin({ modules: 'umd' }),
+          esbuildMinifer({
+            minify: true,
+          }),
+        ],
+      },
+    ],
+    plugins: [
+      clear({
+        targets: ['./dist']
+      }),
+      esbuildPlugin
+    ]
+  },
+  {
+    input: "./src/index.ts",
+    output: [{ file: "types/index.d.ts", format: "es" }],
+    plugins: [dts()],
+  },
+  {
+    input: "./src/parse.ts",
+    output: [{ file: "types/parse.d.ts", format: "es" }],
+    plugins: [dts()],
+  },
+  {
+    input: "./src/transform.ts",
+    output: [{ file: "types/transform.d.ts", format: "es" }],
+    plugins: [dts()],
+  }
+]

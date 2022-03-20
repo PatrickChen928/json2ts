@@ -11,7 +11,7 @@ class Generate {
   }
 
   beginGen() {
-      const typeValue = this.ast.typeValue!;
+    const typeValue = this.ast.typeValue!;
     let code = ``;
     code += `{`;
     code += this.gen(typeValue);
