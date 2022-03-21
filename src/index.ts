@@ -8,7 +8,7 @@ import type { CompileOptions } from './types';
 function initOptions(options: CompileOptions): CompileOptions {
   const defaultOptions = {
     spiltType: true,
-    parseArray: true,
+    parseArray: false,
     required: true,
     semicolon: false
   };
@@ -16,7 +16,7 @@ function initOptions(options: CompileOptions): CompileOptions {
   return defaultOptions;
 }
 
-export function compile(code: string, options: CompileOptions) {
+export function compile(code: string, options: CompileOptions = {}) {
   const finalOptions = initOptions(options);
   const ast = parse(code, finalOptions);
   // const 

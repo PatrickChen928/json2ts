@@ -3,6 +3,8 @@ export type CompileOptions = {
   parseArray?: boolean;
   required?: boolean;
   semicolon?: boolean;
+  typePrefix?: string;
+  typeSuffix?: string;
 }
 
 export type Position = {
