@@ -1,8 +1,9 @@
 {
   "name": "json2ts",
   "version": "0.0.1",
-  "description": "把json转换成ts类型",
-  "main": "index.js",
+  "description": "transform json to ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
   "types": "types/index.d.ts",
   "scripts": {
     "build": "rollup -c",
@@ -17,14 +18,30 @@
     "src/",
     "types/"
   ],
-  "author": "cp786156072@163.com",
+  "author": "chenpeng cp786156072@163.com",
+  "homepage": "https://github.com/ChpShy/json2ts#README",
+  "bugs": {
+    "url": "https://github.com/ChpShy/json2ts/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChpShy/json2ts.git"
+  },
   "license": "ISC",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs",
+      "types": "./types/index.d.ts"
+    }
+  },
   "devDependencies": {
     "@babel/core": "^7.17.8",
     "@babel/preset-env": "^7.16.11",
     "@rollup/plugin-babel": "^5.3.1",
     "@rollup/plugin-commonjs": "^21.0.2",
     "@vitest/ui": "^0.7.4",
+    "bumpp": "^7.1.1",
     "c8": "^7.11.0",
     "esbuild": "^0.14.27",
     "rollup": "^2.70.1",
