@@ -1,5 +1,5 @@
 import { parse } from './parse';
-import { transform } from './transform';
+import { transform, traverser } from './transform';
 import { generate } from './codegen';
 
 import type { CompileOptions } from './types';
@@ -16,7 +16,13 @@ function initOptions(options: CompileOptions): CompileOptions {
   return defaultOptions;
 }
 
-export function compile(code: string, options: CompileOptions = {}) {
+export {
+  traverser,
+  parse,
+  json2ts
+};
+
+export default function json2ts(code: string, options: CompileOptions = {}) {
   const finalOptions = initOptions(options);
   const ast = parse(code, finalOptions);
   // const 

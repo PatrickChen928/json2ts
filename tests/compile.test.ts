@@ -1,5 +1,5 @@
 import { assert, describe, expect, test, it } from 'vitest';
-import { compile } from '../src';
+import json2ts from '../src';
 
 // Edit an assertion and save to see HMR in action
 
@@ -12,7 +12,7 @@ const json1 = `{
 
 describe('empty json', () => {
   it('expect', () => {
-    expect(compile(json1)).toMatchInlineSnapshot(`
+    expect(json2ts(json1)).toMatchInlineSnapshot(`
       "type Result\$0Type = {
       name:string
       age:number
@@ -23,7 +23,7 @@ describe('empty json', () => {
 
 describe('semicolon end', () => {
   it('expect', () => {
-    expect(compile(json1, { semicolon: true })).toMatchInlineSnapshot(`
+    expect(json2ts(json1, { semicolon: true })).toMatchInlineSnapshot(`
       "type Result\$0Type = {
       name:string;
       age:number;
