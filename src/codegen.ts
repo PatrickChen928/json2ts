@@ -15,36 +15,25 @@ class Generate {
     this.prefix = options.typePrefix || '';
     this.suffix = options.typeSuffix || 'Type';
     this.vars = '';
-    this.i = 1;
+    this.i = -1;
   }
 
   beginGen() {
+    const originName = this.genName('Result');
     const typeValue = this.ast.typeValue!;
-    let code = ``;
-    code += `{\n`;
-    code += this.gen(typeValue);
-    code += `}`;
-    console.log(code);
-    return `${this.vars}type ${this.prefix}Result$0${this.suffix} = ${code}`;
+    const code = this.gen(typeValue);
+    return `${this.vars}type ${originName} = ${code}`;
   }
 
   gen(typeValue: Record<string, string | Object> | Array<string | Object>) {
-    let code = '';
-    for (let key in typeValue) {
+    let code = `{\n`;
+    for (const key in typeValue) {
       const type = typeValue[key];
       code += this.genKey(key);
       if (isObject(type)) {
-        const objType = this.gen(type);
-        if (this.options.spiltType) {
-          const varName = this.genName(key);
-          this.vars += `type ${varName} = ${objType};\n `;
-          this.i++;
-          code += varName;
-        } else {
-          code += objType;
-        }
+        code += this.genObjcet(key, type);
       } else if (isArray(type)) {
-        code += this.options.parseArray ? this.genArray(type) : 'Array<any>';
+        code += this.options.parseArray ? this.genArray(key, type) : 'Array<any>';
       } else {
         code += type;
       }
@@ -53,30 +42,48 @@ class Generate {
       }
       code += '\n';
     }
+    code += `}`;
     return code;
   }
 
   genName(key: string) {
+    this.i++;
     return `${this.prefix}${upperCaseFirstChat(key)}$${this.i}${this.suffix}`
   }
 
   genKey(key: string) {
-    return `${key}${this.options.required ? ':' : '?:'}`;
+    return `${key}${this.options.required ? ': ' : '?: '}`;
   }
 
-  genArray(types) {
-    let code = ``;
-    let arr = new Set();
+  genObjcet(key:string, type: Record<string, string | Object>) {
+    let code = '';
+    const objType = this.gen(type);
+    if (this.options.spiltType) {
+      const varName = this.genName(key);
+      this.vars += `type ${varName} = ${objType};\n`;
+      code += varName;
+    } else {
+      code += objType;
+    }
+    return code;
+  }
+
+  genArray(key: string, types: Array<any>) {
+    let code = `Array< `;
+    // 使用 set 过滤重复类型
+    const arrTypes = new Set();
     types.forEach(type => {
       if (isArray(type)) {
-        code += this.genArray(type);
+        arrTypes.add(this.genArray(key, type));
       } if (isObject(type)) {
-        code += this.gen(type);
+        arrTypes.add(this.genObjcet(key, type));
       } else {
-        arr.add(type);
+        arrTypes.add(type);
       }
-    })
-    return 
+    });
+    code += Array.from(arrTypes).join(' | ');
+    code += ' >';
+    return code;
   }
 }
 
