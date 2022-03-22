@@ -267,6 +267,12 @@ function isObject(value) {
   return _typeof(value) === "object" && objectToString(value).slice(8, -1) === "Object";
 }
 
+function upperCaseFirstChat(str) {
+  return str.replace(/( |^)[a-z]/g, function (L) {
+    return L.toUpperCase();
+  });
+}
+
 function traverseNode(nodes, parent, visiter) {
   nodes.forEach(function (node) {
     var visit = visiter[node.type];
@@ -356,32 +362,33 @@ var Generate = /*#__PURE__*/function () {
 
     this.ast = ast;
     this.options = options;
+    this.prefix = options.typePrefix || "";
+    this.suffix = options.typeSuffix || "Type";
+    this.vars = "";
+    this.i = -1;
   }
 
   _createClass(Generate, [{
     key: "beginGen",
     value: function beginGen() {
+      var originName = this.genName("Result");
       var typeValue = this.ast.typeValue;
-      var code = "";
-      code += "{";
-      code += this.gen(typeValue);
-      code += "}";
-      console.log(code);
-      return code;
+      var code = this.gen(typeValue);
+      return "".concat(this.vars, "type ").concat(originName, " = ").concat(code);
     }
   }, {
     key: "gen",
     value: function gen(typeValue) {
-      var code = "";
+      var code = "{\n";
 
       for (var key in typeValue) {
         var type = typeValue[key];
         code += this.genKey(key);
 
         if (isObject(type)) {
-          code += this.gen(type);
+          code += this.genObjcet(key, type);
         } else if (isArray(type)) {
-          code += this.options.parseArray ? this.genArray(type) : "Array<any>";
+          code += this.options.parseArray ? this.genArray(key, type) : "Array<any>";
         } else {
           code += type;
         }
@@ -389,34 +396,61 @@ var Generate = /*#__PURE__*/function () {
         if (this.options.semicolon) {
           code += ";";
         }
+
+        code += "\n";
+      }
+
+      code += "}";
+      return code;
+    }
+  }, {
+    key: "genName",
+    value: function genName(key) {
+      this.i++;
+      return "".concat(this.prefix).concat(upperCaseFirstChat(key), "$").concat(this.i).concat(this.suffix);
+    }
+  }, {
+    key: "genKey",
+    value: function genKey(key) {
+      return "".concat(key).concat(this.options.required ? ": " : "?: ");
+    }
+  }, {
+    key: "genObjcet",
+    value: function genObjcet(key, type) {
+      var code = "";
+      var objType = this.gen(type);
+
+      if (this.options.spiltType) {
+        var varName = this.genName(key);
+        this.vars += "type ".concat(varName, " = ").concat(objType, ";\n");
+        code += varName;
+      } else {
+        code += objType;
       }
 
       return code;
     }
   }, {
-    key: "genKey",
-    value: function genKey(key) {
-      return "".concat(key).concat(this.options.required ? ":" : "?:");
-    }
-  }, {
     key: "genArray",
-    value: function genArray(types) {
+    value: function genArray(key, types) {
       var _this = this;
 
-      var code = "";
-      var arr = /* @__PURE__ */new Set();
+      var code = "Array< ";
+      var arrTypes = /* @__PURE__ */new Set();
       types.forEach(function (type) {
         if (isArray(type)) {
-          code += _this.genArray(type);
+          arrTypes.add(_this.genArray(key, type));
         }
 
         if (isObject(type)) {
-          code += _this.gen(type);
+          arrTypes.add(_this.genObjcet(key, type));
         } else {
-          arr.add(type);
+          arrTypes.add(type);
         }
       });
-      return;
+      code += Array.from(arrTypes).join(" | ");
+      code += " >";
+      return code;
     }
   }]);
 
@@ -430,7 +464,7 @@ function generate(ast, options) {
 function initOptions(options) {
   var defaultOptions = {
     spiltType: true,
-    parseArray: true,
+    parseArray: false,
     required: true,
     semicolon: false
   };
@@ -438,11 +472,15 @@ function initOptions(options) {
   return defaultOptions;
 }
 
-function compile(code, options) {
+function json2ts(code) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var finalOptions = initOptions(options);
   var ast = parse(code, finalOptions);
   transform(ast);
   return generate(ast, finalOptions);
 }
 
-exports.compile = compile;
+exports["default"] = json2ts;
+exports.json2ts = json2ts;
+exports.parse = parse;
+exports.traverser = traverser;

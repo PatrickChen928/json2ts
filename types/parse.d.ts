@@ -3,6 +3,8 @@ declare type CompileOptions = {
     parseArray?: boolean;
     required?: boolean;
     semicolon?: boolean;
+    typePrefix?: string;
+    typeSuffix?: string;
 };
 declare type Position = {
     offset: number;
