@@ -22,6 +22,8 @@ export {
   json2ts
 };
 
+export * from './contant';
+
 export default function json2ts(code: string, options: CompileOptions = {}) {
   const finalOptions = initOptions(options);
   const ast = parse(code, finalOptions);
