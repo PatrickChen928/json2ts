@@ -14,22 +14,22 @@ json-parser > transform > codegen
 ## Install
 
 ```javascript
-npm i @cp/json2ts
+npm i @cyly/json2ts
 
 // or
 
-yarn add @cp/json2ts
+yarn add @cyly/json2ts
 
 // or 
 
-pnpm i @cp/json2ts
+pnpm i @cyly/json2ts
 ```
 
 ## Document
 ### json2ts
 
 ```javascript
-import json2ts from '@cp/json2ts';
+import json2ts from '@cyly/json2ts';
 
 const json = {
   "a": 123,
@@ -44,7 +44,7 @@ const result = json2ts(JSON.stringify(json));
 ### parse
 
 ```javascript
-import { parse } from '@cp/json2ts';
+import { parse } from '@cyly/json2ts';
 
 const json = {
   "a": 123,
@@ -60,7 +60,7 @@ const ast = parse(JSON.stringify(json));
 ### traverser
 
 ```javascript
-import { traverser, STRING_TYPE, ARRAY_TYPE } from '@cp/json2ts';
+import { traverser, STRING_TYPE, ARRAY_TYPE } from '@cyly/json2ts';
 
 const json = {
   "a": 123,
