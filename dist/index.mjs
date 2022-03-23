@@ -475,4 +475,4 @@ function json2ts(code) {
   return generate(ast, finalOptions);
 }
 
-export { json2ts as default, json2ts, parse, traverser };
+export { ARRAY_ITEM, ARRAY_TYPE, COMMENT_KEY, LAST_COMMENT, NEXT_COMMENT, NUMBER_TYPE, OBJECT_TYPE, ROOT_KEY, ROOT_TYPE, STRING_TYPE, json2ts as default, json2ts, parse, traverser };

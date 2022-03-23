@@ -480,6 +480,16 @@ function json2ts(code) {
   return generate(ast, finalOptions);
 }
 
+exports.ARRAY_ITEM = ARRAY_ITEM;
+exports.ARRAY_TYPE = ARRAY_TYPE;
+exports.COMMENT_KEY = COMMENT_KEY;
+exports.LAST_COMMENT = LAST_COMMENT;
+exports.NEXT_COMMENT = NEXT_COMMENT;
+exports.NUMBER_TYPE = NUMBER_TYPE;
+exports.OBJECT_TYPE = OBJECT_TYPE;
+exports.ROOT_KEY = ROOT_KEY;
+exports.ROOT_TYPE = ROOT_TYPE;
+exports.STRING_TYPE = STRING_TYPE;
 exports["default"] = json2ts;
 exports.json2ts = json2ts;
 exports.parse = parse;

@@ -16,6 +16,7 @@
   Object.defineProperty(_exports, "__esModule", {
     value: true
   });
+  _exports.STRING_TYPE = _exports.ROOT_TYPE = _exports.ROOT_KEY = _exports.OBJECT_TYPE = _exports.NUMBER_TYPE = _exports.NEXT_COMMENT = _exports.LAST_COMMENT = _exports.COMMENT_KEY = _exports.ARRAY_TYPE = _exports.ARRAY_ITEM = void 0;
   _exports.json2ts = _exports["default"] = json2ts;
   _exports.parse = parse;
   _exports.traverser = traverser;
@@ -31,15 +32,25 @@
   function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
   var ROOT_TYPE = "Root";
+  _exports.ROOT_TYPE = ROOT_TYPE;
   var STRING_TYPE = "string";
+  _exports.STRING_TYPE = STRING_TYPE;
   var NUMBER_TYPE = "number";
+  _exports.NUMBER_TYPE = NUMBER_TYPE;
   var OBJECT_TYPE = "Object";
+  _exports.OBJECT_TYPE = OBJECT_TYPE;
   var ARRAY_TYPE = "Array";
+  _exports.ARRAY_TYPE = ARRAY_TYPE;
   var ROOT_KEY = "root";
+  _exports.ROOT_KEY = ROOT_KEY;
   var ARRAY_ITEM = "$ARRAY_ITEM$";
+  _exports.ARRAY_ITEM = ARRAY_ITEM;
   var COMMENT_KEY = "$COMMENT_KEY$";
+  _exports.COMMENT_KEY = COMMENT_KEY;
   var LAST_COMMENT = "$LAST_COMMENT$";
+  _exports.LAST_COMMENT = LAST_COMMENT;
   var NEXT_COMMENT = "$NEXT_COMMENT$";
+  _exports.NEXT_COMMENT = NEXT_COMMENT;
 
   function getCursor(context) {
     var offset = context.offset,

@@ -40,6 +40,17 @@ declare function parse(input: string, options?: CompileOptions): AstChildNode;
 
 declare function traverser(ast: AstChildNode, visiter: Visiter): AstChildNode;
 
+declare const ROOT_TYPE = "Root";
+declare const STRING_TYPE = "string";
+declare const NUMBER_TYPE = "number";
+declare const OBJECT_TYPE = "Object";
+declare const ARRAY_TYPE = "Array";
+declare const ROOT_KEY = "root";
+declare const ARRAY_ITEM = "$ARRAY_ITEM$";
+declare const COMMENT_KEY = "$COMMENT_KEY$";
+declare const LAST_COMMENT = "$LAST_COMMENT$";
+declare const NEXT_COMMENT = "$NEXT_COMMENT$";
+
 declare function json2ts(code: string, options?: CompileOptions): string;
 
-export { json2ts as default, json2ts, parse, traverser };
+export { ARRAY_ITEM, ARRAY_TYPE, COMMENT_KEY, LAST_COMMENT, NEXT_COMMENT, NUMBER_TYPE, OBJECT_TYPE, ROOT_KEY, ROOT_TYPE, STRING_TYPE, json2ts as default, json2ts, parse, traverser };
