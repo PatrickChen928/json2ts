@@ -1,6 +1,6 @@
 {
   "name": "@cp/json2ts",
-  "version": "0.0.0",
+  "version": "0.0.1-beta.1",
   "description": "transform json to ts",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
