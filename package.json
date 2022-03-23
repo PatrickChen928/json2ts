@@ -16,7 +16,6 @@
   },
   "files": [
     "dist/",
-    "src/",
     "types/"
   ],
   "author": "chenpeng cp786156072@163.com",
