@@ -1,8 +1,8 @@
 # Json2ts
 
-一个`编译原理`的实践项目，解析Json，输出 TS 类型
+使用`编译原理`，解析Json，输出 TS 类型
 
-json-parser > transform > codegen
+json-parse > transform > codegen
 
 ## Features
 
@@ -39,8 +39,28 @@ const json = {
   d: [1, 2, 3]
 };
 
-const result = json2ts(JSON.stringify(json));
+const result = json2ts(JSON.stringify(json), {
+    semicolon: true
+});
 ```
+
+### options
+#### spiltType
+`boolean`。默认：`true`。是否分离对象，分离的话，会将json内的对象作为单独的 type 类型
+
+#### parseArray
+`boolean`。默认：`false`。是否解析数组。默认返回Array< any >
+
+#### required
+`boolean`。默认：`true`。是否都是必须。设为`false`则为：`{ a?: number}`;
+#### semicolon
+`boolean`。默认：`false`。是否使用分号结尾。设为`true`则为：`{a: number; b: string}`
+
+#### typePrefix
+`string`。默认：''。命名的前缀。如设为`User`：`UserName$0Type`
+#### typeSuffix
+`string`。默认：`Type`。命名的后缀。如设为`Temp`：`Name$0Temp`
+
 ### parse
 
 ```javascript
