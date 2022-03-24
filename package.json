@@ -27,7 +27,7 @@
     "type": "git",
     "url": "git+https://github.com/ChpShy/json2ts.git"
   },
-  "license": "ISC",
+  "license": "MIT",
   "exports": {
     ".": {
       "require": "./dist/index.cjs",
