@@ -4,7 +4,7 @@ import { getBabelOutputPlugin } from '@rollup/plugin-babel';
 import dts from 'rollup-plugin-dts';
 
 const useBabelPlugin = function(options = {}) {
-  return getBabelOutputPlugin({ presets: [['@babel/preset-env', options]] });
+  return getBabelOutputPlugin({ presets: [['@babel/preset-env', options]], filename: 'json2ts' });
 } 
 
 const esbuildPlugin = esbuild({
@@ -28,7 +28,6 @@ module.exports = [
       {
         file: 'dist/index.mjs',
         format: 'es',
-        target: 'es2015',
         plugins: [ useBabelPlugin() ]
       },
       {
@@ -39,13 +38,11 @@ module.exports = [
       {
         file: `dist/index.umd.js`,
         name: 'json2ts',
-        extend: true,
         plugins: [ useBabelPlugin({ modules: 'umd' }), ]
       },
       {
         file: `dist/index.umd.min.js`,
         name: 'json2ts',
-        extend: true,
         plugins: [
           useBabelPlugin({ modules: 'umd' }),
           esbuildMinifer({
