@@ -3,8 +3,8 @@ import esbuild from 'rollup-plugin-esbuild';
 import { getBabelOutputPlugin } from '@rollup/plugin-babel';
 import dts from 'rollup-plugin-dts';
 
-const useBabelPlugin = function(options = {}) {
-  return getBabelOutputPlugin({ presets: [['@babel/preset-env', options]], filename: 'json2ts' });
+const useBabelPlugin = function(options = {}, minified) {
+  return getBabelOutputPlugin({ presets: [['@babel/preset-env', options]], filename: 'json2ts', minified });
 } 
 
 const esbuildPlugin = esbuild({
@@ -44,10 +44,7 @@ module.exports = [
         file: `dist/index.umd.min.js`,
         name: 'json2ts',
         plugins: [
-          useBabelPlugin({ modules: 'umd' }),
-          esbuildMinifer({
-            minify: true,
-          }),
+          useBabelPlugin({ modules: 'umd' }, true),
         ],
       },
     ],
