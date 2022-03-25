@@ -31,6 +31,6 @@ declare type Visiter = {
 };
 
 declare function traverser(ast: AstChildNode, visiter: Visiter): AstChildNode;
-declare function transform(ast: AstChildNode, options: CompileOptions): AstChildNode;
+declare function transform(ast: AstChildNode, options?: CompileOptions): AstChildNode;
 
 export { transform, traverser };
