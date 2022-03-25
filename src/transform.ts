@@ -35,7 +35,7 @@ export function traverser(ast: AstChildNode, visiter: Visiter) {
   return ast;
 }
 
-export function transform(ast: AstChildNode, options: CompileOptions) {
+export function transform(ast: AstChildNode, options?: CompileOptions) {
   traverser(ast, {
     [STRING_TYPE]: {
       entry(node, parent) {
