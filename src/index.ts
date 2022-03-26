@@ -10,7 +10,9 @@ function initOptions(options: CompileOptions): CompileOptions {
     spiltType: true,
     parseArray: false,
     required: true,
-    semicolon: false
+    semicolon: false,
+    typeSuffix: 'Type',
+    typePrefix: ''
   };
   Object.assign(defaultOptions, options)
   return defaultOptions;

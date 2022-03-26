@@ -12,8 +12,8 @@ class Generate {
   constructor(ast: AstChildNode, options: CompileOptions) {
     this.ast = ast;
     this.options = options;
-    this.prefix = options.typePrefix || '';
-    this.suffix = options.typeSuffix || 'Type';
+    this.prefix = options.typePrefix;
+    this.suffix = options.typeSuffix;
     this.vars = '';
     this.i = -1;
   }
