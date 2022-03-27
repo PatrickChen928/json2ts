@@ -1,17 +1,17 @@
 # Json2ts
 
-使用`编译原理`，解析Json，输出 TS 类型
+Tranform JSON to TS TYPE by compiler
 
-json-parse > transform > codegen
+`json-parse > transform > codegen`
 
-在线测试：https://chpshy.github.io/json2ts/index.html
+online link：https://chpshy.github.io/json2ts/index.html
 
 ## Features
 
-- 支持层级嵌套
-- 支持数组解析
-- 支持行内和换行的注释解析
-- 支持key值无引号模式
+- support level nesting
+- support array parse
+- support remark parse
+- more flexible. support `key` with `double quotes` or `single quotes` or `no quotes`
 
 ## Install
 
@@ -25,6 +25,14 @@ yarn add @cyly/json2ts
 // or 
 
 pnpm i @cyly/json2ts
+
+// or
+
+<script src="index.umd.min.js"></script>
+
+json2ts.json2ts('{ name: 'apha' }', {
+    semicolon: true
+});
 ```
 
 ## Document
@@ -48,20 +56,20 @@ const result = json2ts(JSON.stringify(json), {
 
 ### options
 #### spiltType
-`boolean`。默认：`true`。是否分离对象，分离的话，会将json内的对象作为单独的 type 类型
+`boolean`. Default：`true`. split Object, if `false` ，will define new `TYPE`, then use this `TYPE` name in the result
 
 #### parseArray
-`boolean`。默认：`false`。是否解析数组。默认返回Array< any >
+`boolean`. Default：`false`. parse array. `false` will return  `Array< any >`, otherwise return `Array< number | string ... >`
 
 #### required
-`boolean`。默认：`true`。是否都是必须。设为`false`则为：`{ a?: number}`;
+`boolean`. Default：`true`. key is required or not. if `false` will return `{ a?: number}`
 #### semicolon
-`boolean`。默认：`false`。是否使用分号结尾。设为`true`则为：`{a: number; b: string}`
+`boolean`. Default：`false`. with semicolon end. if `true` will return `{ a: number; b: string; }`, otherwise will return `{ a: number b: string }`
 
 #### typePrefix
-`string`。默认：''。命名的前缀。如设为`User`：`UserName$0Type`
+`string`. Default：''. type name prefix.exp: config `User`, name will be `UserKeyName$0`
 #### typeSuffix
-`string`。默认：`Type`。命名的后缀。如设为`Temp`：`Name$0Temp`
+`string`. Default：`Type`. type name suffix. exp: config `Temp`,name will be `KeyName$0Temp`
 
 ### parse
 
@@ -261,6 +269,6 @@ traverser(ast, {
 
 ## TODO
 
-- [ ] 类型复用、继承
-- [ ] required个性化
-- [ ] 输出格式化
+- [ ] Type resuse and inherit
+- [ ] `required` config with key
+- [ ] output format

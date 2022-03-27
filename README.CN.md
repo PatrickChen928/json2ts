@@ -4,7 +4,7 @@
 
 json-parse > transform > codegen
 
-在线测试：https://chpshy.github.io/json2ts/index.html
+在线体验：https://chpshy.github.io/json2ts/index.html
 
 ## Features
 
@@ -25,6 +25,14 @@ yarn add @cyly/json2ts
 // or 
 
 pnpm i @cyly/json2ts
+
+// or
+
+<script src="index.umd.min.js"></script>
+
+json2ts.json2ts('{ name: 'apha' }', {
+    semicolon: true
+});
 ```
 
 ## Document
@@ -56,12 +64,12 @@ const result = json2ts(JSON.stringify(json), {
 #### required
 `boolean`。默认：`true`。是否都是必须。设为`false`则为：`{ a?: number}`;
 #### semicolon
-`boolean`。默认：`false`。是否使用分号结尾。设为`true`则为：`{a: number; b: string}`
+`boolean`。默认：`false`。是否使用分号结尾。设为`true`则为：`{a: number; b: string;}`
 
 #### typePrefix
-`string`。默认：''。命名的前缀。如设为`User`：`UserName$0Type`
+`string`。默认：''。命名的前缀。如设为`User`：`UserKeyName$0`
 #### typeSuffix
-`string`。默认：`Type`。命名的后缀。如设为`Temp`：`Name$0Temp`
+`string`。默认：`Type`。命名的后缀。如设为`Temp`：`KeyName$0Temp`
 
 ### parse
 
