@@ -1,5 +1,7 @@
 # Json2ts
 
+English | [中文](./README.CN.md)
+
 Tranform JSON to TS TYPE by compiler
 
 `json-parse > transform > codegen`

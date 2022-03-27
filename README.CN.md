@@ -1,5 +1,7 @@
 # Json2ts
 
+中文 | [English](./README.md) 
+
 使用`编译原理`，解析Json，输出 TS 类型
 
 json-parse > transform > codegen
