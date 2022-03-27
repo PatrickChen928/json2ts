@@ -37,19 +37,22 @@ describe('array any', () => {
     arr: [1, 2, '3']
   }
   const res = parse(JSON.stringify(jsonArr));
-  const content = res.value[0];
+  const content = res.value[0] as AstChildNode;
+  const value1 = content.value[0] as AstChildNode;
+  const value2 = content.value[1] as AstChildNode;
+  const value3 = content.value[2] as AstChildNode;
   it('expect', () => {
-    expect((content as AstChildNode).key).toEqual('arr');
-    expect((content as AstChildNode).type).toEqual(ARRAY_TYPE);
-    expect((content as AstChildNode).value.length).toEqual(3);
-    expect((content as AstChildNode).value[0].type).toEqual(NUMBER_TYPE);
-    expect((content as AstChildNode).value[0].value).toEqual('1');
-    expect((content as AstChildNode).value[0].key).toEqual(ARRAY_ITEM);
-    expect((content as AstChildNode).value[1].type).toEqual(NUMBER_TYPE);
-    expect((content as AstChildNode).value[1].value).toEqual('2');
-    expect((content as AstChildNode).value[1].key).toEqual(ARRAY_ITEM);
-    expect((content as AstChildNode).value[2].type).toEqual(STRING_TYPE);
-    expect((content as AstChildNode).value[2].value).toEqual('3');
-    expect((content as AstChildNode).value[2].key).toEqual(ARRAY_ITEM);
+    expect(content.key).toEqual('arr');
+    expect(content.type).toEqual(ARRAY_TYPE);
+    expect(content.value.length).toEqual(3);
+    expect(value1.type).toEqual(NUMBER_TYPE);
+    expect(value1.value).toEqual('1');
+    expect(value1.key).toEqual(ARRAY_ITEM);
+    expect(value2.type).toEqual(NUMBER_TYPE);
+    expect(value2.value).toEqual('2');
+    expect(value2.key).toEqual(ARRAY_ITEM);
+    expect(value3.type).toEqual(STRING_TYPE);
+    expect(value3.value).toEqual('3');
+    expect(value3.key).toEqual(ARRAY_ITEM);
   })
 })
