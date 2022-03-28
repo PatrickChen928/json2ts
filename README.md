@@ -268,9 +268,3 @@ traverser(ast, {
 }
 
 ```
-
-## TODO
-
-- [ ] Type resuse and inherit
-- [ ] `required` config with key
-- [ ] output format
