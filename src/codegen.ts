@@ -42,7 +42,7 @@ class Generate {
       }
       code += '\n';
     }
-    code += `}`;
+    code += `}\n`;
     return code;
   }
 

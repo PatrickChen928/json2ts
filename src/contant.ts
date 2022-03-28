@@ -2,6 +2,7 @@ export const ROOT_TYPE = "Root";
 export const STRING_TYPE = "string";
 export const NUMBER_TYPE = "number";
 export const NULL_TYPE = "null";
+export const BOOLEAN_TYPE = "boolean";
 export const UNDEFINED_TYPE = "undefined";
 export const OBJECT_TYPE = "Object";
 export const ARRAY_TYPE = "Array";

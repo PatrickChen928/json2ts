@@ -16,7 +16,7 @@
   Object.defineProperty(_exports, "__esModule", {
     value: true
   });
-  _exports.UNDEFINED_TYPE = _exports.STRING_TYPE = _exports.ROOT_TYPE = _exports.ROOT_KEY = _exports.OBJECT_TYPE = _exports.NUMBER_TYPE = _exports.NULL_TYPE = _exports.NEXT_COMMENT = _exports.LAST_COMMENT = _exports.COMMENT_KEY = _exports.ARRAY_TYPE = _exports.ARRAY_ITEM = void 0;
+  _exports.UNDEFINED_TYPE = _exports.STRING_TYPE = _exports.ROOT_TYPE = _exports.ROOT_KEY = _exports.OBJECT_TYPE = _exports.NUMBER_TYPE = _exports.NULL_TYPE = _exports.NEXT_COMMENT = _exports.LAST_COMMENT = _exports.COMMENT_KEY = _exports.BOOLEAN_TYPE = _exports.ARRAY_TYPE = _exports.ARRAY_ITEM = void 0;
   _exports.json2ts = _exports["default"] = json2ts;
   _exports.parse = parse;
   _exports.traverser = traverser;
@@ -39,6 +39,8 @@
   _exports.NUMBER_TYPE = NUMBER_TYPE;
   var NULL_TYPE = "null";
   _exports.NULL_TYPE = NULL_TYPE;
+  var BOOLEAN_TYPE = "boolean";
+  _exports.BOOLEAN_TYPE = BOOLEAN_TYPE;
   var UNDEFINED_TYPE = "undefined";
   _exports.UNDEFINED_TYPE = UNDEFINED_TYPE;
   var OBJECT_TYPE = "Object";
@@ -232,6 +234,12 @@
     return "null";
   }
 
+  function parseBoolean(context) {
+    var match = /^(true|false)/i.exec(context.source);
+    advanceBy(context, match[0].length);
+    return match[1];
+  }
+
   function parseUndefined(context) {
     advanceBy(context, 9);
     return "undefined";
@@ -258,6 +266,9 @@
     } else if (context.source.indexOf("null") === 0) {
       value = parseNull(context);
       type = NULL_TYPE;
+    } else if (context.source.indexOf("true") === 0 || context.source.indexOf("false") === 0) {
+      value = parseBoolean(context);
+      type = BOOLEAN_TYPE;
     } else if (context.source.indexOf("undefined") === 0) {
       value = parseUndefined(context);
       type = UNDEFINED_TYPE;
@@ -410,6 +421,16 @@
           parent.typeValue[node.key] = node.type;
         }
       }
+    }), _defineProperty(_traverser, BOOLEAN_TYPE, {
+      entry: function entry(node, parent) {
+        if (node.key === ARRAY_ITEM) {
+          parent.typeValue = parent.typeValue || [];
+          parent.typeValue.push(node.type);
+        } else {
+          parent.typeValue = parent.typeValue || {};
+          parent.typeValue[node.key] = node.type;
+        }
+      }
     }), _traverser));
     return ast;
   }
@@ -458,7 +479,7 @@
           code += "\n";
         }
 
-        code += "}";
+        code += "}\n";
         return code;
       }
     }, {

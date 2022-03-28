@@ -44,6 +44,7 @@ declare const ROOT_TYPE = "Root";
 declare const STRING_TYPE = "string";
 declare const NUMBER_TYPE = "number";
 declare const NULL_TYPE = "null";
+declare const BOOLEAN_TYPE = "boolean";
 declare const UNDEFINED_TYPE = "undefined";
 declare const OBJECT_TYPE = "Object";
 declare const ARRAY_TYPE = "Array";
@@ -55,4 +56,4 @@ declare const NEXT_COMMENT = "$NEXT_COMMENT$";
 
 declare function json2ts(code: string, options?: CompileOptions): string;
 
-export { ARRAY_ITEM, ARRAY_TYPE, COMMENT_KEY, LAST_COMMENT, NEXT_COMMENT, NULL_TYPE, NUMBER_TYPE, OBJECT_TYPE, ROOT_KEY, ROOT_TYPE, STRING_TYPE, UNDEFINED_TYPE, json2ts as default, json2ts, parse, traverser };
+export { ARRAY_ITEM, ARRAY_TYPE, BOOLEAN_TYPE, COMMENT_KEY, LAST_COMMENT, NEXT_COMMENT, NULL_TYPE, NUMBER_TYPE, OBJECT_TYPE, ROOT_KEY, ROOT_TYPE, STRING_TYPE, UNDEFINED_TYPE, json2ts as default, json2ts, parse, traverser };

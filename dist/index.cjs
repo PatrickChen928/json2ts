@@ -17,6 +17,7 @@ var ROOT_TYPE = "Root";
 var STRING_TYPE = "string";
 var NUMBER_TYPE = "number";
 var NULL_TYPE = "null";
+var BOOLEAN_TYPE = "boolean";
 var UNDEFINED_TYPE = "undefined";
 var OBJECT_TYPE = "Object";
 var ARRAY_TYPE = "Array";
@@ -202,6 +203,12 @@ function parseNull(context) {
   return "null";
 }
 
+function parseBoolean(context) {
+  var match = /^(true|false)/i.exec(context.source);
+  advanceBy(context, match[0].length);
+  return match[1];
+}
+
 function parseUndefined(context) {
   advanceBy(context, 9);
   return "undefined";
@@ -228,6 +235,9 @@ function parseValue(context) {
   } else if (context.source.indexOf("null") === 0) {
     value = parseNull(context);
     type = NULL_TYPE;
+  } else if (context.source.indexOf("true") === 0 || context.source.indexOf("false") === 0) {
+    value = parseBoolean(context);
+    type = BOOLEAN_TYPE;
   } else if (context.source.indexOf("undefined") === 0) {
     value = parseUndefined(context);
     type = UNDEFINED_TYPE;
@@ -380,6 +390,16 @@ function transform(ast, options) {
         parent.typeValue[node.key] = node.type;
       }
     }
+  }), _defineProperty(_traverser, BOOLEAN_TYPE, {
+    entry: function entry(node, parent) {
+      if (node.key === ARRAY_ITEM) {
+        parent.typeValue = parent.typeValue || [];
+        parent.typeValue.push(node.type);
+      } else {
+        parent.typeValue = parent.typeValue || {};
+        parent.typeValue[node.key] = node.type;
+      }
+    }
   }), _traverser));
   return ast;
 }
@@ -428,7 +448,7 @@ var Generate = /*#__PURE__*/function () {
         code += "\n";
       }
 
-      code += "}";
+      code += "}\n";
       return code;
     }
   }, {
@@ -512,6 +532,7 @@ function json2ts(code) {
 
 exports.ARRAY_ITEM = ARRAY_ITEM;
 exports.ARRAY_TYPE = ARRAY_TYPE;
+exports.BOOLEAN_TYPE = BOOLEAN_TYPE;
 exports.COMMENT_KEY = COMMENT_KEY;
 exports.LAST_COMMENT = LAST_COMMENT;
 exports.NEXT_COMMENT = NEXT_COMMENT;

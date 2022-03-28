@@ -6,6 +6,7 @@ import {
   NUMBER_TYPE, 
   NULL_TYPE,
   UNDEFINED_TYPE,
+  BOOLEAN_TYPE,
   OBJECT_TYPE ,
   ROOT_KEY,
   ARRAY_ITEM, 
@@ -179,6 +180,12 @@ function parseNull(context: ParserContext) {
   return 'null';
 }
 
+function parseBoolean(context: ParserContext) {
+  const match = /^(true|false)/i.exec(context.source);
+  advanceBy(context, match[0].length);
+  return match[1];
+}
+
 function parseUndefined(context: ParserContext) {
   advanceBy(context, 9);
   return 'undefined';
@@ -204,6 +211,9 @@ function parseValue(context: ParserContext) {
   } else if (context.source.indexOf('null') === 0) {
     value = parseNull(context);
     type = NULL_TYPE;
+  } else if (context.source.indexOf('true') === 0 || context.source.indexOf('false') === 0) {
+    value = parseBoolean(context);
+    type = BOOLEAN_TYPE;
   } else if (context.source.indexOf('undefined') === 0) {
     value = parseUndefined(context);
     type = UNDEFINED_TYPE;
