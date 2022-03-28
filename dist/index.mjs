@@ -11,6 +11,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 var ROOT_TYPE = "Root";
 var STRING_TYPE = "string";
 var NUMBER_TYPE = "number";
+var NULL_TYPE = "null";
+var UNDEFINED_TYPE = "undefined";
 var OBJECT_TYPE = "Object";
 var ARRAY_TYPE = "Array";
 var ROOT_KEY = "root";
@@ -190,6 +192,16 @@ function parseString(context) {
   return match[1];
 }
 
+function parseNull(context) {
+  advanceBy(context, 4);
+  return "null";
+}
+
+function parseUndefined(context) {
+  advanceBy(context, 9);
+  return "undefined";
+}
+
 function parseValue(context) {
   var value = null;
   var type = null;
@@ -208,6 +220,12 @@ function parseValue(context) {
   } else if (code === "{") {
     value = parseChildren(context);
     type = OBJECT_TYPE;
+  } else if (context.source.indexOf("null") === 0) {
+    value = parseNull(context);
+    type = NULL_TYPE;
+  } else if (context.source.indexOf("undefined") === 0) {
+    value = parseUndefined(context);
+    type = UNDEFINED_TYPE;
   }
 
   return {
@@ -347,6 +365,16 @@ function transform(ast, options) {
         parent.typeValue[node.key] = node.typeValue = [];
       }
     }
+  }), _defineProperty(_traverser, NULL_TYPE, {
+    entry: function entry(node, parent) {
+      if (node.key === ARRAY_ITEM) {
+        parent.typeValue = parent.typeValue || [];
+        parent.typeValue.push(node.type);
+      } else {
+        parent.typeValue = parent.typeValue || {};
+        parent.typeValue[node.key] = node.type;
+      }
+    }
   }), _traverser));
   return ast;
 }
@@ -477,4 +505,4 @@ function json2ts(code) {
   return generate(ast, finalOptions);
 }
 
-export { ARRAY_ITEM, ARRAY_TYPE, COMMENT_KEY, LAST_COMMENT, NEXT_COMMENT, NUMBER_TYPE, OBJECT_TYPE, ROOT_KEY, ROOT_TYPE, STRING_TYPE, json2ts as default, json2ts, parse, traverser };
+export { ARRAY_ITEM, ARRAY_TYPE, COMMENT_KEY, LAST_COMMENT, NEXT_COMMENT, NULL_TYPE, NUMBER_TYPE, OBJECT_TYPE, ROOT_KEY, ROOT_TYPE, STRING_TYPE, UNDEFINED_TYPE, json2ts as default, json2ts, parse, traverser };

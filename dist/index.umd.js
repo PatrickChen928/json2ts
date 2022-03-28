@@ -16,7 +16,7 @@
   Object.defineProperty(_exports, "__esModule", {
     value: true
   });
-  _exports.STRING_TYPE = _exports.ROOT_TYPE = _exports.ROOT_KEY = _exports.OBJECT_TYPE = _exports.NUMBER_TYPE = _exports.NEXT_COMMENT = _exports.LAST_COMMENT = _exports.COMMENT_KEY = _exports.ARRAY_TYPE = _exports.ARRAY_ITEM = void 0;
+  _exports.UNDEFINED_TYPE = _exports.STRING_TYPE = _exports.ROOT_TYPE = _exports.ROOT_KEY = _exports.OBJECT_TYPE = _exports.NUMBER_TYPE = _exports.NULL_TYPE = _exports.NEXT_COMMENT = _exports.LAST_COMMENT = _exports.COMMENT_KEY = _exports.ARRAY_TYPE = _exports.ARRAY_ITEM = void 0;
   _exports.json2ts = _exports["default"] = json2ts;
   _exports.parse = parse;
   _exports.traverser = traverser;
@@ -37,6 +37,10 @@
   _exports.STRING_TYPE = STRING_TYPE;
   var NUMBER_TYPE = "number";
   _exports.NUMBER_TYPE = NUMBER_TYPE;
+  var NULL_TYPE = "null";
+  _exports.NULL_TYPE = NULL_TYPE;
+  var UNDEFINED_TYPE = "undefined";
+  _exports.UNDEFINED_TYPE = UNDEFINED_TYPE;
   var OBJECT_TYPE = "Object";
   _exports.OBJECT_TYPE = OBJECT_TYPE;
   var ARRAY_TYPE = "Array";
@@ -223,6 +227,16 @@
     return match[1];
   }
 
+  function parseNull(context) {
+    advanceBy(context, 4);
+    return "null";
+  }
+
+  function parseUndefined(context) {
+    advanceBy(context, 9);
+    return "undefined";
+  }
+
   function parseValue(context) {
     var value = null;
     var type = null;
@@ -241,6 +255,12 @@
     } else if (code === "{") {
       value = parseChildren(context);
       type = OBJECT_TYPE;
+    } else if (context.source.indexOf("null") === 0) {
+      value = parseNull(context);
+      type = NULL_TYPE;
+    } else if (context.source.indexOf("undefined") === 0) {
+      value = parseUndefined(context);
+      type = UNDEFINED_TYPE;
     }
 
     return {
@@ -378,6 +398,16 @@
         } else {
           parent.typeValue = parent.typeValue || {};
           parent.typeValue[node.key] = node.typeValue = [];
+        }
+      }
+    }), _defineProperty(_traverser, NULL_TYPE, {
+      entry: function entry(node, parent) {
+        if (node.key === ARRAY_ITEM) {
+          parent.typeValue = parent.typeValue || [];
+          parent.typeValue.push(node.type);
+        } else {
+          parent.typeValue = parent.typeValue || {};
+          parent.typeValue[node.key] = node.type;
         }
       }
     }), _traverser));
