@@ -32,6 +32,16 @@ describe('semicolon end', () => {
   })
 });
 
+describe('null', () => {
+  it('expect', () => {
+    expect(json2ts(`{ name: null }`, { semicolon: true })).toMatchInlineSnapshot(`
+      "type Result\$0Type = {
+      name: null;
+      }"
+    `)
+  })
+});
+
 const inputArray = `{
   "name": "aphto",
   "arrName": ["fu", 18, { name: 'fu', age: 18 }]

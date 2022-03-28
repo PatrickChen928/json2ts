@@ -4,6 +4,8 @@ import {
   ARRAY_TYPE, 
   STRING_TYPE, 
   NUMBER_TYPE, 
+  NULL_TYPE,
+  UNDEFINED_TYPE,
   OBJECT_TYPE ,
   ROOT_KEY,
   ARRAY_ITEM, 
@@ -172,6 +174,16 @@ function parseString(context: ParserContext) {
   return match[1];
 }
 
+function parseNull(context: ParserContext) {
+  advanceBy(context, 4);
+  return 'null';
+}
+
+function parseUndefined(context: ParserContext) {
+  advanceBy(context, 9);
+  return 'undefined';
+}
+
 function parseValue(context: ParserContext) {
   let value = null;
   let type = null;
@@ -189,6 +201,12 @@ function parseValue(context: ParserContext) {
   } else if (code === '{') {
     value = parseChildren(context);
     type = OBJECT_TYPE;
+  } else if (context.source.indexOf('null') === 0) {
+    value = parseNull(context);
+    type = NULL_TYPE;
+  } else if (context.source.indexOf('undefined') === 0) {
+    value = parseUndefined(context);
+    type = UNDEFINED_TYPE;
   }
   return {
     value,

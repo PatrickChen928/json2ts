@@ -1,7 +1,7 @@
 import { assert, describe, expect, test, it } from 'vitest';
 import { parse } from '../src/parse';
 
-import { ARRAY_ITEM, ARRAY_TYPE, NUMBER_TYPE, STRING_TYPE } from '../src';
+import { ARRAY_ITEM, ARRAY_TYPE, NULL_TYPE, NUMBER_TYPE, STRING_TYPE, UNDEFINED_TYPE } from '../src';
 import type { AstChildNode } from '../src/types';
 
 // Edit an assertion and save to see HMR in action
@@ -18,6 +18,38 @@ describe('empty json', () => {
     expect(parse(json0)).toMatchObject({ key: 'root', type: 'Root', value: [] })
   })
 });
+
+describe('null parse', () => {
+  const nullJson = {
+    "name": null
+  }
+  const result = parse(JSON.stringify(nullJson)).value;
+  const content = result[0] as AstChildNode;
+  it('expect', () => {
+    expect(result.length).toEqual(1);
+    expect(content.value).toEqual('null');
+    expect(content.key).toEqual('name');
+    expect(content.type).toEqual(NULL_TYPE);
+    expect(content.loc.source).toMatchInlineSnapshot('"\\"name\\":null"')
+  })
+})
+
+// describe('undefined parse', () => {
+//   const undefinedJson = {
+//     name: undefined
+//   }
+//   console.log(JSON.stringify(undefinedJson))
+//   const result = parse(JSON.stringify(undefinedJson)).value;
+//   const content = result[0] as AstChildNode;
+//   it('expect', () => {
+//     expect(result.length).toEqual(1);
+//     expect(content.value).toEqual('undefined');
+//     expect(content.key).toEqual('name');
+//     expect(content.type).toEqual(UNDEFINED_TYPE);
+//     expect(content.loc.source).toMatchInlineSnapshot('"\\"name\\":null"')
+//   })
+// })
+
 
 const json2 = {
   "a": 123,
@@ -56,3 +88,29 @@ describe('array any', () => {
     expect(value3.key).toEqual(ARRAY_ITEM);
   })
 })
+
+const jsonNull = {
+  "status":{
+    "code":0,
+    "message":"OK",
+    "description":""
+},
+"result":{
+    "cabinetLists":null,
+    "newSpuLists":null,
+    "recycleAreaLists":[
+        {
+            "albumName":null,
+            "feature":null,
+            "likeCount":null,
+            "price":11000, //价格 (分)
+            "size":null,
+            "spuId":9178, 
+            "spuImg":"https://si.geilicdn.com/wdseller763727604-6b190000017b62dea7d90a20e7c7_1284_1712.jpg",
+            "spuName":"Kiyo",
+            "spuType":2,
+            "wantCount":0 //spu订阅人数
+        }
+    ]
+}
+}

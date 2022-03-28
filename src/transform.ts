@@ -4,7 +4,8 @@ import {
   ARRAY_TYPE, 
   STRING_TYPE, 
   NUMBER_TYPE, 
-  OBJECT_TYPE 
+  OBJECT_TYPE, 
+  NULL_TYPE
 } from './contant';
 import { isArray } from './utils';
 
@@ -80,6 +81,17 @@ export function transform(ast: AstChildNode, options?: CompileOptions) {
         } else {
           parent.typeValue = parent.typeValue || {};
           parent.typeValue[node.key] = node.typeValue = [];
+        }
+      }
+    },
+    [NULL_TYPE]: {
+      entry(node, parent) {
+        if (node.key === ARRAY_ITEM) {
+          parent.typeValue = parent.typeValue || [];
+          (parent.typeValue as Array<string | Object>).push(node.type);
+        } else {
+          parent.typeValue = parent.typeValue || {};
+          parent.typeValue[node.key] = node.type;
         }
       }
     }
