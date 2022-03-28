@@ -362,8 +362,8 @@ var Generate = /*#__PURE__*/function () {
 
     this.ast = ast;
     this.options = options;
-    this.prefix = options.typePrefix || "";
-    this.suffix = options.typeSuffix || "Type";
+    this.prefix = options.typePrefix;
+    this.suffix = options.typeSuffix;
     this.vars = "";
     this.i = -1;
   }
@@ -466,7 +466,9 @@ function initOptions(options) {
     spiltType: true,
     parseArray: false,
     required: true,
-    semicolon: false
+    semicolon: false,
+    typeSuffix: "Type",
+    typePrefix: ""
   };
   Object.assign(defaultOptions, options);
   return defaultOptions;
