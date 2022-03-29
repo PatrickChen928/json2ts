@@ -5,6 +5,7 @@ declare type CompileOptions = {
     semicolon?: boolean;
     typePrefix?: string;
     typeSuffix?: string;
+    indent?: number;
 };
 declare type Position = {
     offset: number;

@@ -455,6 +455,7 @@
       this.suffix = options.typeSuffix;
       this.vars = "";
       this.i = -1;
+      this.level = 1;
     }
 
     _createClass(Generate, [{
@@ -489,6 +490,10 @@
           code += "\n";
         }
 
+        if (!this.options.spiltType) {
+          code += this.genFormatChat(this.level - 1);
+        }
+
         code += "}";
         return code;
       }
@@ -501,12 +506,24 @@
     }, {
       key: "genKey",
       value: function genKey(key) {
-        return "  ".concat(key).concat(this.options.required ? ": " : "?: ");
+        return "".concat(this.genFormatChat(this.level)).concat(key).concat(this.options.required ? ": " : "?: ");
+      }
+    }, {
+      key: "genFormatChat",
+      value: function genFormatChat(level) {
+        var indent = this.options.indent;
+
+        if (this.options.spiltType) {
+          return " ".repeat(indent);
+        }
+
+        return " ".repeat(level * indent);
       }
     }, {
       key: "genObjcet",
       value: function genObjcet(key, type) {
         var code = "";
+        this.level++;
         var objType = this.gen(type);
 
         if (this.options.spiltType) {
@@ -517,6 +534,7 @@
           code += objType;
         }
 
+        this.level--;
         return code;
       }
     }, {
@@ -557,7 +575,8 @@
       required: true,
       semicolon: false,
       typeSuffix: "Type",
-      typePrefix: ""
+      typePrefix: "",
+      indent: 2
     };
     Object.assign(defaultOptions, options);
     return defaultOptions;

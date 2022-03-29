@@ -16,7 +16,7 @@ describe('empty json', () => {
       "type Result\$0Type = {
         name: string
         age: number
-        }"
+      }"
     `)
   })
 });
@@ -27,7 +27,7 @@ describe('semicolon end', () => {
       "type Result\$0Type = {
         name: string;
         age: number;
-        }"
+      }"
     `)
   })
 });
@@ -37,7 +37,7 @@ describe('null', () => {
     expect(json2ts(`{ name: null }`, { semicolon: true })).toMatchInlineSnapshot(`
       "type Result\$0Type = {
         name: null;
-        }"
+      }"
     `)
   })
 });
@@ -47,7 +47,7 @@ describe('undefined', () => {
     expect(json2ts(`{ name: undefined }`, { semicolon: true })).toMatchInlineSnapshot(`
       "type Result\$0Type = {
         name: undefined;
-        }"
+      }"
     `)
   })
 });
@@ -58,7 +58,7 @@ describe('boolean', () => {
       "type Result\$0Type = {
         name: boolean;
         key: boolean;
-        }"
+      }"
     `)
   })
 });
@@ -73,7 +73,7 @@ describe('array any', () => {
       "type Result\$0Type = {
         name: string;
         arrName: Array<any>;
-        }"
+      }"
     `)
   })
 });
@@ -84,12 +84,12 @@ describe('array parse', () => {
       "type ArrName\$1Type = {
         name: string;
         age: number;
-        };
+      };
       
       type Result\$0Type = {
         name: string;
         arrName: Array< string | number | ArrName\$1Type >;
-        }"
+      }"
     `)
   })
 });
@@ -111,6 +111,52 @@ describe('not spiltType', () => {
             val: number;
           };
         };
+      }"
+    `)
+  })
+});
+
+describe('indent', () => {
+  const inputArray = `{
+    "name": { 
+      key: {
+        val: 3
+      }
+    }
+  }`;
+  it('expect', () => {
+    expect(json2ts(inputArray, { semicolon: true, parseArray: true, spiltType: false, indent: 4 })).toMatchInlineSnapshot(`
+      "type Result\$0Type = {
+          name: {
+              key: {
+                  val: number;
+              };
+          };
+      }"
+    `)
+  })
+});
+
+describe('indent + splitType', () => {
+  const inputArray = `{
+    "name": { 
+      key: {
+        val: 3
+      }
+    }
+  }`;
+  it('expect', () => {
+    expect(json2ts(inputArray, { semicolon: true, parseArray: true, indent: 4 })).toMatchInlineSnapshot(`
+      "type Key\$1Type = {
+          val: number;
+      };
+      
+      type Name\$2Type = {
+          key: Key\$1Type;
+      };
+      
+      type Result\$0Type = {
+          name: Name\$2Type;
       }"
     `)
   })

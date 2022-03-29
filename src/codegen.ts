@@ -44,7 +44,10 @@ class Generate {
       }
       code += '\n';
     }
-    code += `${this.genFormatChat(this.level - 1)}}`;
+    if (!this.options.spiltType) {
+      code += this.genFormatChat(this.level - 1);
+    }
+    code += '}'
     return code;
   }
 
