@@ -72,6 +72,8 @@ const result = json2ts(JSON.stringify(json), {
 `string`。默认：''。命名的前缀。如设为`User`：`UserKeyName$0`
 #### typeSuffix
 `string`。默认：`Type`。命名的后缀。如设为`Temp`：`KeyName$0Temp`
+#### indent
+`number`. Default：2. 输出格式化的缩进
 
 ### parse
 

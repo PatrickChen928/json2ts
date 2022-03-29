@@ -72,6 +72,8 @@ const result = json2ts(JSON.stringify(json), {
 `string`. Default：''. type name prefix.exp: config `User`, name will be `UserKeyName$0`
 #### typeSuffix
 `string`. Default：`Type`. type name suffix. exp: config `Temp`,name will be `KeyName$0Temp`
+#### indent
+`number`. Default：2. output indent format.
 
 ### parse
 
