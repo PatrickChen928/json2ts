@@ -6,6 +6,7 @@ class Generate {
   private options: CompileOptions;
   private vars: string;
   private i: number;
+  private level: number;
   private prefix: string;
   private suffix: string;
 
@@ -16,6 +17,7 @@ class Generate {
     this.suffix = options.typeSuffix;
     this.vars = '';
     this.i = -1;
+    this.level = 1;
   }
 
   beginGen() {
@@ -42,7 +44,7 @@ class Generate {
       }
       code += '\n';
     }
-    code += `}\n`;
+    code += `${this.genFormatChat(this.level - 1)}}`;
     return code;
   }
 
@@ -52,19 +54,29 @@ class Generate {
   }
 
   genKey(key: string) {
-    return `${key}${this.options.required ? ': ' : '?: '}`;
+    return `${this.genFormatChat(this.level)}${key}${this.options.required ? ': ' : '?: '}`;
+  }
+
+  genFormatChat(level: number) {
+    const indent = this.options.indent;
+    if (this.options.spiltType) {
+      return ' '.repeat(indent);
+    }
+    return ' '.repeat(level * indent);
   }
 
   genObjcet(key:string, type: Record<string, string | Object>) {
     let code = '';
+    this.level++;
     const objType = this.gen(type);
     if (this.options.spiltType) {
       const varName = this.genName(key);
-      this.vars += `type ${varName} = ${objType};\n`;
+      this.vars += `type ${varName} = ${objType};\n\n`;
       code += varName;
     } else {
       code += objType;
     }
+    this.level--;
     return code;
   }
 

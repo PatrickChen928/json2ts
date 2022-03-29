@@ -489,7 +489,7 @@
           code += "\n";
         }
 
-        code += "}\n";
+        code += "}";
         return code;
       }
     }, {
@@ -501,7 +501,7 @@
     }, {
       key: "genKey",
       value: function genKey(key) {
-        return "".concat(key).concat(this.options.required ? ": " : "?: ");
+        return "  ".concat(key).concat(this.options.required ? ": " : "?: ");
       }
     }, {
       key: "genObjcet",
@@ -511,7 +511,7 @@
 
         if (this.options.spiltType) {
           var varName = this.genName(key);
-          this.vars += "type ".concat(varName, " = ").concat(objType, ";\n");
+          this.vars += "type ".concat(varName, " = ").concat(objType, ";\n\n");
           code += varName;
         } else {
           code += objType;

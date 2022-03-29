@@ -12,7 +12,8 @@ function initOptions(options: CompileOptions): CompileOptions {
     required: true,
     semicolon: false,
     typeSuffix: 'Type',
-    typePrefix: ''
+    typePrefix: '',
+    indent: 2
   };
   Object.assign(defaultOptions, options)
   return defaultOptions;

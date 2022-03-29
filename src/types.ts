@@ -5,6 +5,7 @@ export type CompileOptions = {
   semicolon?: boolean;
   typePrefix?: string;
   typeSuffix?: string;
+  indent?: number
 }
 
 export type Position = {
