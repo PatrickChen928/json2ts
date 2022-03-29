@@ -6,7 +6,8 @@ import {
   NUMBER_TYPE, 
   OBJECT_TYPE, 
   NULL_TYPE,
-  BOOLEAN_TYPE
+  BOOLEAN_TYPE,
+  UNDEFINED_TYPE
 } from './contant';
 import { isArray } from './utils';
 
@@ -97,6 +98,17 @@ export function transform(ast: AstChildNode, options?: CompileOptions) {
       }
     },
     [BOOLEAN_TYPE]: {
+      entry(node, parent) {
+        if (node.key === ARRAY_ITEM) {
+          parent.typeValue = parent.typeValue || [];
+          (parent.typeValue as Array<string | Object>).push(node.type);
+        } else {
+          parent.typeValue = parent.typeValue || {};
+          parent.typeValue[node.key] = node.type;
+        }
+      }
+    },
+    [UNDEFINED_TYPE]: {
       entry(node, parent) {
         if (node.key === ARRAY_ITEM) {
           parent.typeValue = parent.typeValue || [];

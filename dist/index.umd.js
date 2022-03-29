@@ -431,6 +431,16 @@
           parent.typeValue[node.key] = node.type;
         }
       }
+    }), _defineProperty(_traverser, UNDEFINED_TYPE, {
+      entry: function entry(node, parent) {
+        if (node.key === ARRAY_ITEM) {
+          parent.typeValue = parent.typeValue || [];
+          parent.typeValue.push(node.type);
+        } else {
+          parent.typeValue = parent.typeValue || {};
+          parent.typeValue[node.key] = node.type;
+        }
+      }
     }), _traverser));
     return ast;
   }

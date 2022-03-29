@@ -16,7 +16,8 @@ describe('empty json', () => {
       "type Result\$0Type = {
       name: string
       age: number
-      }"
+      }
+      "
     `)
   })
 });
@@ -27,7 +28,8 @@ describe('semicolon end', () => {
       "type Result\$0Type = {
       name: string;
       age: number;
-      }"
+      }
+      "
     `)
   })
 });
@@ -37,7 +39,31 @@ describe('null', () => {
     expect(json2ts(`{ name: null }`, { semicolon: true })).toMatchInlineSnapshot(`
       "type Result\$0Type = {
       name: null;
-      }"
+      }
+      "
+    `)
+  })
+});
+
+describe('undefined', () => {
+  it('expect', () => {
+    expect(json2ts(`{ name: undefined }`, { semicolon: true })).toMatchInlineSnapshot(`
+      "type Result\$0Type = {
+      name: undefined;
+      }
+      "
+    `)
+  })
+});
+
+describe('boolean', () => {
+  it('expect', () => {
+    expect(json2ts(`{ name: true, key: false }`, { semicolon: true })).toMatchInlineSnapshot(`
+      "type Result\$0Type = {
+      name: boolean;
+      key: boolean;
+      }
+      "
     `)
   })
 });
@@ -52,7 +78,8 @@ describe('array any', () => {
       "type Result\$0Type = {
       name: string;
       arrName: Array<any>;
-      }"
+      }
+      "
     `)
   })
 });
@@ -63,11 +90,13 @@ describe('array parse', () => {
       "type ArrName\$1Type = {
       name: string;
       age: number;
-      };
+      }
+      ;
       type Result\$0Type = {
       name: string;
       arrName: Array< string | number | ArrName\$1Type >;
-      }"
+      }
+      "
     `)
   })
 });
@@ -80,8 +109,10 @@ describe('not spiltType', () => {
       arrName: Array< string | number | {
       name: string;
       age: number;
-      } >;
-      }"
+      }
+       >;
+      }
+      "
     `)
   })
 });
