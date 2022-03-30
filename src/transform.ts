@@ -11,6 +11,16 @@ import {
 } from './contant';
 import { isArray } from './utils';
 
+function normalEntryHandle(node: AstChildNode, parent: AstChildNode) {
+  if (node.key === ARRAY_ITEM) {
+    parent.typeValue = parent.typeValue || [];
+    (parent.typeValue as Array<string | Object>).push(node.type);
+  } else {
+    parent.typeValue = parent.typeValue || {};
+    parent.typeValue[node.key] = node.type;
+  }
+}
+
 function traverseNode(nodes: AstChildNode[], parent: AstChildNode, visiter: Visiter) {
   nodes.forEach(node => {
     let visit = visiter[node.type];
@@ -42,24 +52,12 @@ export function transform(ast: AstChildNode, options?: CompileOptions) {
   traverser(ast, {
     [STRING_TYPE]: {
       entry(node, parent) {
-        if (node.key === ARRAY_ITEM) {
-          parent.typeValue = parent.typeValue || [];
-          (parent.typeValue as Array<string | Object>).push(node.type);
-        } else {
-          parent.typeValue = parent.typeValue || {};
-          parent.typeValue[node.key] = node.type;
-        }
+        normalEntryHandle(node, parent);
       }
     },
     [NUMBER_TYPE]: {
       entry(node, parent) {
-        if (node.key === ARRAY_ITEM) {
-          parent.typeValue = parent.typeValue || [];
-          (parent.typeValue as Array<string | Object>).push(node.type);
-        } else {
-          parent.typeValue = parent.typeValue || {};
-          parent.typeValue[node.key] = node.type;
-        }
+        normalEntryHandle(node, parent);
       }
     },
     [OBJECT_TYPE]: {
@@ -88,35 +86,17 @@ export function transform(ast: AstChildNode, options?: CompileOptions) {
     },
     [NULL_TYPE]: {
       entry(node, parent) {
-        if (node.key === ARRAY_ITEM) {
-          parent.typeValue = parent.typeValue || [];
-          (parent.typeValue as Array<string | Object>).push(node.type);
-        } else {
-          parent.typeValue = parent.typeValue || {};
-          parent.typeValue[node.key] = node.type;
-        }
+        normalEntryHandle(node, parent);
       }
     },
     [BOOLEAN_TYPE]: {
       entry(node, parent) {
-        if (node.key === ARRAY_ITEM) {
-          parent.typeValue = parent.typeValue || [];
-          (parent.typeValue as Array<string | Object>).push(node.type);
-        } else {
-          parent.typeValue = parent.typeValue || {};
-          parent.typeValue[node.key] = node.type;
-        }
+        normalEntryHandle(node, parent);
       }
     },
     [UNDEFINED_TYPE]: {
       entry(node, parent) {
-        if (node.key === ARRAY_ITEM) {
-          parent.typeValue = parent.typeValue || [];
-          (parent.typeValue as Array<string | Object>).push(node.type);
-        } else {
-          parent.typeValue = parent.typeValue || {};
-          parent.typeValue[node.key] = node.type;
-        }
+        normalEntryHandle(node, parent);
       }
     }
   });

@@ -10,7 +10,7 @@ import {
   OBJECT_TYPE ,
   ROOT_KEY,
   ARRAY_ITEM, 
-  COMMENT_KEY, 
+  COMMENT_TYPE, 
   LAST_COMMENT, 
   NEXT_COMMENT
 } from './contant';
@@ -242,7 +242,7 @@ function parseComment(context: ParserContext, isLast: boolean) {
   const comment = match[1];
   const key = isLast ? LAST_COMMENT : NEXT_COMMENT;
   advanceBy(context, match[0].length);
-  return {key, value: comment, type: COMMENT_KEY, loc: getLoc(context, start)};
+  return {key, value: comment, type: COMMENT_TYPE, loc: getLoc(context, start)};
 }
 
 /**
