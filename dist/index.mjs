@@ -23,6 +23,7 @@ var LAST_COMMENT = "$LAST_COMMENT$";
 var NEXT_COMMENT = "$NEXT_COMMENT$";
 var ARRAY_ERROR_MESSAGE = "array should be closed";
 var COMMENT_ERROR_MESSAGE = "comment is illegal";
+var VALUE_ILLEGAL_ERROR_MESSAGE = "value is illegal";
 
 function getCursor(context) {
   var offset = context.offset,
@@ -238,6 +239,8 @@ function parseValue(context) {
   } else if (context.source.indexOf("undefined") === 0) {
     value = parseUndefined(context);
     type = UNDEFINED_TYPE;
+  } else {
+    throw new Error(VALUE_ILLEGAL_ERROR_MESSAGE);
   }
 
   return {
@@ -541,4 +544,4 @@ function json2ts(code) {
   return generate(ast, finalOptions);
 }
 
-export { ARRAY_ERROR_MESSAGE, ARRAY_ITEM, ARRAY_TYPE, BOOLEAN_TYPE, COMMENT_ERROR_MESSAGE, COMMENT_TYPE, LAST_COMMENT, NEXT_COMMENT, NULL_TYPE, NUMBER_TYPE, OBJECT_TYPE, ROOT_KEY, ROOT_TYPE, STRING_TYPE, UNDEFINED_TYPE, json2ts as default, json2ts, parse, traverser };
+export { ARRAY_ERROR_MESSAGE, ARRAY_ITEM, ARRAY_TYPE, BOOLEAN_TYPE, COMMENT_ERROR_MESSAGE, COMMENT_TYPE, LAST_COMMENT, NEXT_COMMENT, NULL_TYPE, NUMBER_TYPE, OBJECT_TYPE, ROOT_KEY, ROOT_TYPE, STRING_TYPE, UNDEFINED_TYPE, VALUE_ILLEGAL_ERROR_MESSAGE, json2ts as default, json2ts, parse, traverser };

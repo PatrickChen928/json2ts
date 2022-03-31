@@ -14,7 +14,8 @@ import {
   LAST_COMMENT, 
   NEXT_COMMENT,
   ARRAY_ERROR_MESSAGE,
-  COMMENT_ERROR_MESSAGE
+  COMMENT_ERROR_MESSAGE,
+  VALUE_ILLEGAL_ERROR_MESSAGE
 } from './contant';
 
 function getCursor(context: ParserContext) {
@@ -219,6 +220,8 @@ function parseValue(context: ParserContext) {
   } else if (context.source.indexOf('undefined') === 0) {
     value = parseUndefined(context);
     type = UNDEFINED_TYPE;
+  } else {
+    throw new Error(VALUE_ILLEGAL_ERROR_MESSAGE)
   }
   return {
     value,

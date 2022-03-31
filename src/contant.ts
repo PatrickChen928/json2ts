@@ -15,3 +15,4 @@ export const NEXT_COMMENT = "$NEXT_COMMENT$";
 
 export const ARRAY_ERROR_MESSAGE = "array should be closed";
 export const COMMENT_ERROR_MESSAGE = "comment is illegal";
+export const VALUE_ILLEGAL_ERROR_MESSAGE = "value is illegal";

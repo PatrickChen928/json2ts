@@ -28,6 +28,7 @@ var LAST_COMMENT = "$LAST_COMMENT$";
 var NEXT_COMMENT = "$NEXT_COMMENT$";
 var ARRAY_ERROR_MESSAGE = "array should be closed";
 var COMMENT_ERROR_MESSAGE = "comment is illegal";
+var VALUE_ILLEGAL_ERROR_MESSAGE = "value is illegal";
 
 function getCursor(context) {
   var offset = context.offset,
@@ -243,6 +244,8 @@ function parseValue(context) {
   } else if (context.source.indexOf("undefined") === 0) {
     value = parseUndefined(context);
     type = UNDEFINED_TYPE;
+  } else {
+    throw new Error(VALUE_ILLEGAL_ERROR_MESSAGE);
   }
 
   return {
@@ -561,6 +564,7 @@ exports.ROOT_KEY = ROOT_KEY;
 exports.ROOT_TYPE = ROOT_TYPE;
 exports.STRING_TYPE = STRING_TYPE;
 exports.UNDEFINED_TYPE = UNDEFINED_TYPE;
+exports.VALUE_ILLEGAL_ERROR_MESSAGE = VALUE_ILLEGAL_ERROR_MESSAGE;
 exports["default"] = json2ts;
 exports.json2ts = json2ts;
 exports.parse = parse;

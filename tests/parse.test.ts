@@ -8,7 +8,8 @@ import {
   STRING_TYPE, 
   UNDEFINED_TYPE, 
   ARRAY_ERROR_MESSAGE, 
-  COMMENT_ERROR_MESSAGE
+  COMMENT_ERROR_MESSAGE,
+  VALUE_ILLEGAL_ERROR_MESSAGE
 } from '../src';
 import type { AstChildNode } from '../src/types';
 
@@ -43,14 +44,32 @@ describe('null parse', () => {
 })
 
 describe('array should be closed', () => {
-  const nullJson = `{
-    "name": [ 1, 2,
-    "key": 2
-  }`
+  // 数组没有闭合，会继续往下解析，把girlfriend当成value，所以会提示 VALUE_ILLEGAL_ERROR_MESSAGE
+  const json1 = `{ 
+    // 这是一个名字
+    interest: [ 'swim', 'football', 22 
+    girlfriend: {
+      name: "qiaqia",
+      age: 18,
+      "exboyfriend": [
+        {
+        name: "uzzz",
+          age: 40
+        }
+      ]
+    }
+  }`;
+  const json2 = `{ 
+    // 这是一个名字
+    interest: [ 'swim', 'football', 22 
+  }`;
   it('expect', () => {
-    expect(() => parse(nullJson)).toThrow(ARRAY_ERROR_MESSAGE);
+    expect(() => parse(json1)).toThrow(VALUE_ILLEGAL_ERROR_MESSAGE);
+    expect(() => parse(json2)).toThrow(ARRAY_ERROR_MESSAGE);
   })
 })
+
+
 
 describe('comment should be legal', () => {
   const nullJson = `{

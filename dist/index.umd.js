@@ -16,7 +16,7 @@
   Object.defineProperty(_exports, "__esModule", {
     value: true
   });
-  _exports.UNDEFINED_TYPE = _exports.STRING_TYPE = _exports.ROOT_TYPE = _exports.ROOT_KEY = _exports.OBJECT_TYPE = _exports.NUMBER_TYPE = _exports.NULL_TYPE = _exports.NEXT_COMMENT = _exports.LAST_COMMENT = _exports.COMMENT_TYPE = _exports.COMMENT_ERROR_MESSAGE = _exports.BOOLEAN_TYPE = _exports.ARRAY_TYPE = _exports.ARRAY_ITEM = _exports.ARRAY_ERROR_MESSAGE = void 0;
+  _exports.VALUE_ILLEGAL_ERROR_MESSAGE = _exports.UNDEFINED_TYPE = _exports.STRING_TYPE = _exports.ROOT_TYPE = _exports.ROOT_KEY = _exports.OBJECT_TYPE = _exports.NUMBER_TYPE = _exports.NULL_TYPE = _exports.NEXT_COMMENT = _exports.LAST_COMMENT = _exports.COMMENT_TYPE = _exports.COMMENT_ERROR_MESSAGE = _exports.BOOLEAN_TYPE = _exports.ARRAY_TYPE = _exports.ARRAY_ITEM = _exports.ARRAY_ERROR_MESSAGE = void 0;
   _exports.json2ts = _exports["default"] = json2ts;
   _exports.parse = parse;
   _exports.traverser = traverser;
@@ -61,6 +61,8 @@
   _exports.ARRAY_ERROR_MESSAGE = ARRAY_ERROR_MESSAGE;
   var COMMENT_ERROR_MESSAGE = "comment is illegal";
   _exports.COMMENT_ERROR_MESSAGE = COMMENT_ERROR_MESSAGE;
+  var VALUE_ILLEGAL_ERROR_MESSAGE = "value is illegal";
+  _exports.VALUE_ILLEGAL_ERROR_MESSAGE = VALUE_ILLEGAL_ERROR_MESSAGE;
 
   function getCursor(context) {
     var offset = context.offset,
@@ -276,6 +278,8 @@
     } else if (context.source.indexOf("undefined") === 0) {
       value = parseUndefined(context);
       type = UNDEFINED_TYPE;
+    } else {
+      throw new Error(VALUE_ILLEGAL_ERROR_MESSAGE);
     }
 
     return {
