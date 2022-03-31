@@ -12,7 +12,9 @@ import {
   ARRAY_ITEM, 
   COMMENT_TYPE, 
   LAST_COMMENT, 
-  NEXT_COMMENT
+  NEXT_COMMENT,
+  ARRAY_ERROR_MESSAGE,
+  COMMENT_ERROR_MESSAGE
 } from './contant';
 
 function getCursor(context: ParserContext) {
@@ -128,7 +130,7 @@ function parseChildren(context: ParserContext) {
         nodes.push(parseComment(context, currLine === lastLine));
         advanceSpaces(context);
       } else {
-        throw new Error('错误的备注')
+        throw new Error(COMMENT_ERROR_MESSAGE)
       }
     } else {
       nodes.push(parseData(context));
@@ -228,12 +230,16 @@ function parseArray(context: ParserContext) {
   const nodes = [];
   while(!isEnd(context)) {
     nodes.push(parseData(context, ARRAY_ITEM));
-    if (context.source[0] === ']') {
+    const s = context.source[0];
+    if (s === ']') {
       advanceBy(context, 1);
       return nodes;
     }
+    if (s === '}' || s === ':') {
+      throw new Error(ARRAY_ERROR_MESSAGE);
+    }
   }
-  return nodes;
+  throw new Error(ARRAY_ERROR_MESSAGE);
 }
 
 function parseComment(context: ParserContext, isLast: boolean) {

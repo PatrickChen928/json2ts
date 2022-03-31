@@ -49,12 +49,14 @@ declare const BOOLEAN_TYPE = "boolean";
 declare const UNDEFINED_TYPE = "undefined";
 declare const OBJECT_TYPE = "Object";
 declare const ARRAY_TYPE = "Array";
+declare const COMMENT_TYPE = "Comment";
 declare const ROOT_KEY = "root";
 declare const ARRAY_ITEM = "$ARRAY_ITEM$";
-declare const COMMENT_KEY = "$COMMENT_KEY$";
 declare const LAST_COMMENT = "$LAST_COMMENT$";
 declare const NEXT_COMMENT = "$NEXT_COMMENT$";
+declare const ARRAY_ERROR_MESSAGE = "array should be closed";
+declare const COMMENT_ERROR_MESSAGE = "comment is illegal";
 
 declare function json2ts(code: string, options?: CompileOptions): string;
 
-export { ARRAY_ITEM, ARRAY_TYPE, BOOLEAN_TYPE, COMMENT_KEY, LAST_COMMENT, NEXT_COMMENT, NULL_TYPE, NUMBER_TYPE, OBJECT_TYPE, ROOT_KEY, ROOT_TYPE, STRING_TYPE, UNDEFINED_TYPE, json2ts as default, json2ts, parse, traverser };
+export { ARRAY_ERROR_MESSAGE, ARRAY_ITEM, ARRAY_TYPE, BOOLEAN_TYPE, COMMENT_ERROR_MESSAGE, COMMENT_TYPE, LAST_COMMENT, NEXT_COMMENT, NULL_TYPE, NUMBER_TYPE, OBJECT_TYPE, ROOT_KEY, ROOT_TYPE, STRING_TYPE, UNDEFINED_TYPE, json2ts as default, json2ts, parse, traverser };

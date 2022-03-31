@@ -1,7 +1,15 @@
 import { assert, describe, expect, test, it } from 'vitest';
 import { parse } from '../src/parse';
-
-import { ARRAY_ITEM, ARRAY_TYPE, NULL_TYPE, NUMBER_TYPE, STRING_TYPE, UNDEFINED_TYPE } from '../src';
+import { 
+  ARRAY_ITEM, 
+  ARRAY_TYPE, 
+  NULL_TYPE, 
+  NUMBER_TYPE, 
+  STRING_TYPE, 
+  UNDEFINED_TYPE, 
+  ARRAY_ERROR_MESSAGE, 
+  COMMENT_ERROR_MESSAGE
+} from '../src';
 import type { AstChildNode } from '../src/types';
 
 // Edit an assertion and save to see HMR in action
@@ -34,21 +42,40 @@ describe('null parse', () => {
   })
 })
 
-// describe('undefined parse', () => {
-//   const undefinedJson = {
-//     name: undefined
-//   }
-//   console.log(JSON.stringify(undefinedJson))
-//   const result = parse(JSON.stringify(undefinedJson)).value;
-//   const content = result[0] as AstChildNode;
-//   it('expect', () => {
-//     expect(result.length).toEqual(1);
-//     expect(content.value).toEqual('undefined');
-//     expect(content.key).toEqual('name');
-//     expect(content.type).toEqual(UNDEFINED_TYPE);
-//     expect(content.loc.source).toMatchInlineSnapshot('"\\"name\\":null"')
-//   })
-// })
+describe('array should be closed', () => {
+  const nullJson = `{
+    "name": [ 1, 2,
+    "key": 2
+  }`
+  it('expect', () => {
+    expect(() => parse(nullJson)).toThrow(ARRAY_ERROR_MESSAGE);
+  })
+})
+
+describe('comment should be legal', () => {
+  const nullJson = `{
+    / is illegal
+    "name": 1
+  }`
+  it('expect', () => {
+    expect(() => parse(nullJson)).toThrow(COMMENT_ERROR_MESSAGE);
+  })
+})
+
+describe('undefined parse', () => {
+  const undefinedJson = `{
+    name: undefined
+  }`
+  const result = parse(undefinedJson).value;
+  const content = result[0] as AstChildNode;
+  it('expect', () => {
+    expect(result.length).toEqual(1);
+    expect(content.value).toEqual('undefined');
+    expect(content.key).toEqual('name');
+    expect(content.type).toEqual(UNDEFINED_TYPE);
+    expect(content.loc.source).toMatchInlineSnapshot('"name: undefined"')
+  })
+})
 
 
 const json2 = {
@@ -88,29 +115,3 @@ describe('array any', () => {
     expect(value3.key).toEqual(ARRAY_ITEM);
   })
 })
-
-const jsonNull = {
-  "status":{
-    "code":0,
-    "message":"OK",
-    "description":""
-},
-"result":{
-    "cabinetLists":null,
-    "newSpuLists":null,
-    "recycleAreaLists":[
-        {
-            "albumName":null,
-            "feature":null,
-            "likeCount":null,
-            "price":11000, //价格 (分)
-            "size":null,
-            "spuId":9178, 
-            "spuImg":"https://si.geilicdn.com/wdseller763727604-6b190000017b62dea7d90a20e7c7_1284_1712.jpg",
-            "spuName":"Kiyo",
-            "spuType":2,
-            "wantCount":0 //spu订阅人数
-        }
-    ]
-}
-}

@@ -16,11 +16,13 @@ var BOOLEAN_TYPE = "boolean";
 var UNDEFINED_TYPE = "undefined";
 var OBJECT_TYPE = "Object";
 var ARRAY_TYPE = "Array";
+var COMMENT_TYPE = "Comment";
 var ROOT_KEY = "root";
 var ARRAY_ITEM = "$ARRAY_ITEM$";
-var COMMENT_KEY = "$COMMENT_KEY$";
 var LAST_COMMENT = "$LAST_COMMENT$";
 var NEXT_COMMENT = "$NEXT_COMMENT$";
+var ARRAY_ERROR_MESSAGE = "array should be closed";
+var COMMENT_ERROR_MESSAGE = "comment is illegal";
 
 function getCursor(context) {
   var offset = context.offset,
@@ -147,7 +149,7 @@ function parseChildren(context) {
         nodes.push(parseComment(context, currLine === lastLine));
         advanceSpaces(context);
       } else {
-        throw new Error("\u9519\u8BEF\u7684\u5907\u6CE8");
+        throw new Error(COMMENT_ERROR_MESSAGE);
       }
     } else {
       nodes.push(parseData(context));
@@ -249,14 +251,19 @@ function parseArray(context) {
 
   while (!isEnd(context)) {
     nodes.push(parseData(context, ARRAY_ITEM));
+    var s = context.source[0];
 
-    if (context.source[0] === "]") {
+    if (s === "]") {
       advanceBy(context, 1);
       return nodes;
     }
+
+    if (s === "}" || s === ":") {
+      throw new Error(ARRAY_ERROR_MESSAGE);
+    }
   }
 
-  return nodes;
+  throw new Error(ARRAY_ERROR_MESSAGE);
 }
 
 function parseComment(context, isLast) {
@@ -268,7 +275,7 @@ function parseComment(context, isLast) {
   return {
     key: key,
     value: comment,
-    type: COMMENT_KEY,
+    type: COMMENT_TYPE,
     loc: getLoc(context, start)
   };
 }
@@ -294,6 +301,16 @@ function upperCaseFirstChat(str) {
   return str.replace(/( |^)[a-z]/g, function (L) {
     return L.toUpperCase();
   });
+}
+
+function normalEntryHandle(node, parent) {
+  if (node.key === ARRAY_ITEM) {
+    parent.typeValue = parent.typeValue || [];
+    parent.typeValue.push(node.type);
+  } else {
+    parent.typeValue = parent.typeValue || {};
+    parent.typeValue[node.key] = node.type;
+  }
 }
 
 function traverseNode(nodes, parent, visiter) {
@@ -335,23 +352,11 @@ function transform(ast, options) {
 
   traverser(ast, (_traverser = {}, _defineProperty(_traverser, STRING_TYPE, {
     entry: function entry(node, parent) {
-      if (node.key === ARRAY_ITEM) {
-        parent.typeValue = parent.typeValue || [];
-        parent.typeValue.push(node.type);
-      } else {
-        parent.typeValue = parent.typeValue || {};
-        parent.typeValue[node.key] = node.type;
-      }
+      normalEntryHandle(node, parent);
     }
   }), _defineProperty(_traverser, NUMBER_TYPE, {
     entry: function entry(node, parent) {
-      if (node.key === ARRAY_ITEM) {
-        parent.typeValue = parent.typeValue || [];
-        parent.typeValue.push(node.type);
-      } else {
-        parent.typeValue = parent.typeValue || {};
-        parent.typeValue[node.key] = node.type;
-      }
+      normalEntryHandle(node, parent);
     }
   }), _defineProperty(_traverser, OBJECT_TYPE, {
     entry: function entry(node, parent) {
@@ -377,33 +382,15 @@ function transform(ast, options) {
     }
   }), _defineProperty(_traverser, NULL_TYPE, {
     entry: function entry(node, parent) {
-      if (node.key === ARRAY_ITEM) {
-        parent.typeValue = parent.typeValue || [];
-        parent.typeValue.push(node.type);
-      } else {
-        parent.typeValue = parent.typeValue || {};
-        parent.typeValue[node.key] = node.type;
-      }
+      normalEntryHandle(node, parent);
     }
   }), _defineProperty(_traverser, BOOLEAN_TYPE, {
     entry: function entry(node, parent) {
-      if (node.key === ARRAY_ITEM) {
-        parent.typeValue = parent.typeValue || [];
-        parent.typeValue.push(node.type);
-      } else {
-        parent.typeValue = parent.typeValue || {};
-        parent.typeValue[node.key] = node.type;
-      }
+      normalEntryHandle(node, parent);
     }
   }), _defineProperty(_traverser, UNDEFINED_TYPE, {
     entry: function entry(node, parent) {
-      if (node.key === ARRAY_ITEM) {
-        parent.typeValue = parent.typeValue || [];
-        parent.typeValue.push(node.type);
-      } else {
-        parent.typeValue = parent.typeValue || {};
-        parent.typeValue[node.key] = node.type;
-      }
+      normalEntryHandle(node, parent);
     }
   }), _traverser));
   return ast;
@@ -554,4 +541,4 @@ function json2ts(code) {
   return generate(ast, finalOptions);
 }
 
-export { ARRAY_ITEM, ARRAY_TYPE, BOOLEAN_TYPE, COMMENT_KEY, LAST_COMMENT, NEXT_COMMENT, NULL_TYPE, NUMBER_TYPE, OBJECT_TYPE, ROOT_KEY, ROOT_TYPE, STRING_TYPE, UNDEFINED_TYPE, json2ts as default, json2ts, parse, traverser };
+export { ARRAY_ERROR_MESSAGE, ARRAY_ITEM, ARRAY_TYPE, BOOLEAN_TYPE, COMMENT_ERROR_MESSAGE, COMMENT_TYPE, LAST_COMMENT, NEXT_COMMENT, NULL_TYPE, NUMBER_TYPE, OBJECT_TYPE, ROOT_KEY, ROOT_TYPE, STRING_TYPE, UNDEFINED_TYPE, json2ts as default, json2ts, parse, traverser };

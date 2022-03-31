@@ -12,3 +12,6 @@ export const ROOT_KEY = "root";
 export const ARRAY_ITEM = "$ARRAY_ITEM$";
 export const LAST_COMMENT = "$LAST_COMMENT$";
 export const NEXT_COMMENT = "$NEXT_COMMENT$";
+
+export const ARRAY_ERROR_MESSAGE = "array should be closed";
+export const COMMENT_ERROR_MESSAGE = "comment is illegal";
