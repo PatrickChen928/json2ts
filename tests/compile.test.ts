@@ -95,7 +95,7 @@ describe('array parse', () => {
 });
 
 
-describe('not spiltType', () => {
+describe('not splitType', () => {
   const inputArray = `{
     "name": { 
       key: {
@@ -104,7 +104,7 @@ describe('not spiltType', () => {
     }
   }`;
   it('expect', () => {
-    expect(json2ts(inputArray, { semicolon: true, parseArray: true, spiltType: false })).toMatchInlineSnapshot(`
+    expect(json2ts(inputArray, { semicolon: true, parseArray: true, splitType: false })).toMatchInlineSnapshot(`
       "type Result\$0Type = {
         name: {
           key: {
@@ -125,7 +125,7 @@ describe('indent', () => {
     }
   }`;
   it('expect', () => {
-    expect(json2ts(inputArray, { semicolon: true, parseArray: true, spiltType: false, indent: 4 })).toMatchInlineSnapshot(`
+    expect(json2ts(inputArray, { semicolon: true, parseArray: true, splitType: false, indent: 4 })).toMatchInlineSnapshot(`
       "type Result\$0Type = {
           name: {
               key: {

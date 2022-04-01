@@ -1,5 +1,5 @@
 export type CompileOptions = {
-  spiltType?: boolean;
+  splitType?: boolean;
   parseArray?: boolean;
   required?: boolean;
   semicolon?: boolean;

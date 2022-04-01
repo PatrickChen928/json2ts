@@ -44,7 +44,7 @@ class Generate {
       }
       code += '\n';
     }
-    if (!this.options.spiltType) {
+    if (!this.options.splitType) {
       code += this.genFormatChat(this.level - 1);
     }
     code += '}'
@@ -62,7 +62,7 @@ class Generate {
 
   genFormatChat(level: number) {
     const indent = this.options.indent;
-    if (this.options.spiltType) {
+    if (this.options.splitType) {
       return ' '.repeat(indent);
     }
     return ' '.repeat(level * indent);
@@ -72,7 +72,7 @@ class Generate {
     let code = '';
     this.level++;
     const objType = this.gen(type);
-    if (this.options.spiltType) {
+    if (this.options.splitType) {
       const varName = this.genName(key);
       this.vars += `type ${varName} = ${objType};\n\n`;
       code += varName;

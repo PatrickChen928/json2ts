@@ -57,7 +57,7 @@ const result = json2ts(JSON.stringify(json), {
 ```
 
 ### options
-#### spiltType
+#### splitType
 `boolean`. Default：`true`. split Object, if `false` ，will define new `TYPE`, then use this `TYPE` name in the result
 
 #### parseArray

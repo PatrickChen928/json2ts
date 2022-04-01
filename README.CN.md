@@ -57,7 +57,7 @@ const result = json2ts(JSON.stringify(json), {
 ```
 
 ### options
-#### spiltType
+#### splitType
 `boolean`。默认：`true`。是否分离对象，分离的话，会将json内的对象作为单独的 type 类型
 
 #### parseArray

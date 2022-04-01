@@ -7,7 +7,7 @@ import type { CompileOptions } from './types';
 
 function initOptions(options: CompileOptions): CompileOptions {
   const defaultOptions = {
-    spiltType: true,
+    splitType: true,
     parseArray: false,
     required: true,
     semicolon: false,
