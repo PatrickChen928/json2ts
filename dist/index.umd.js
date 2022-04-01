@@ -29,6 +29,12 @@
 
   function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+  function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+  function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+  function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
   function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
   var ROOT_TYPE = "Root";
@@ -345,6 +351,29 @@
     });
   }
 
+  function stringifyObjAndSort(obj) {
+    var keys = Object.keys(obj).sort();
+    var res = "{";
+
+    var _iterator = _createForOfIteratorHelper(keys),
+        _step;
+
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var val = _step.value;
+        res += "".concat(val, ":").concat(obj[val], ",");
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+
+    res.replace(/,$/, "");
+    res += "}";
+    return res;
+  }
+
   function normalEntryHandle(node, parent) {
     if (node.key === ARRAY_ITEM) {
       parent.typeValue = parent.typeValue || [];
@@ -449,6 +478,7 @@
       this.vars = "";
       this.i = -1;
       this.level = 1;
+      this.objValueMap = /* @__PURE__ */new Map();
     }
 
     _createClass(Generate, [{
@@ -483,7 +513,7 @@
           code += "\n";
         }
 
-        if (!this.options.spiltType) {
+        if (!this.options.splitType) {
           code += this.genFormatChat(this.level - 1);
         }
 
@@ -506,7 +536,7 @@
       value: function genFormatChat(level) {
         var indent = this.options.indent;
 
-        if (this.options.spiltType) {
+        if (this.options.splitType) {
           return " ".repeat(indent);
         }
 
@@ -519,16 +549,28 @@
         this.level++;
         var objType = this.gen(type);
 
-        if (this.options.spiltType) {
-          var varName = this.genName(key);
-          this.vars += "type ".concat(varName, " = ").concat(objType, ";\n\n");
-          code += varName;
+        if (this.options.splitType) {
+          code += this.genObjectCodeWithVar(objType, key, type);
         } else {
           code += objType;
         }
 
         this.level--;
         return code;
+      }
+    }, {
+      key: "genObjectCodeWithVar",
+      value: function genObjectCodeWithVar(objType, key, type) {
+        var val = stringifyObjAndSort(type);
+
+        if (this.objValueMap.has(val)) {
+          return this.objValueMap.get(val);
+        }
+
+        var varName = this.genName(key);
+        this.objValueMap.set(val, varName);
+        this.vars += "type ".concat(varName, " = ").concat(objType, ";\n\n");
+        return varName;
       }
     }, {
       key: "genArray",
@@ -563,7 +605,7 @@
 
   function initOptions(options) {
     var defaultOptions = {
-      spiltType: true,
+      splitType: true,
       parseArray: false,
       required: true,
       semicolon: false,

@@ -161,3 +161,34 @@ describe('indent + splitType', () => {
     `)
   })
 });
+
+describe('object reuse', () => {
+  const inputArray = `{
+    name: "qiaqia",
+    age: 18,
+    girlfriend: [
+      {
+        age: 20,
+        name: "bengbeng",
+      },
+      {
+        name: "qiqi",
+        age: 30
+      }
+    ]
+  }`;
+  it('expect', () => {
+    expect(json2ts(inputArray, { semicolon: true, parseArray: true,  indent: 2 })).toMatchInlineSnapshot(`
+      "type Girlfriend\$1Type = {
+        age: number;
+        name: string;
+      };
+      
+      type Result\$0Type = {
+        name: string;
+        age: number;
+        girlfriend: Array< Girlfriend\$1Type >;
+      }"
+    `)
+  })
+});

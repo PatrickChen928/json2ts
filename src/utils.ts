@@ -13,3 +13,37 @@ export function isObject(value: any): value is Record<string, any> {
 export function upperCaseFirstChat(str: string) {
   return str.replace(/( |^)[a-z]/g, (L: string) => L.toUpperCase())
 }
+
+
+export function objIsEqual(obj1: Record<string, any>, obj2: Record<string, any>) {
+  for (let key in obj1) {
+    if (isObject(obj1[key])) {
+      if (!isObject(obj2[key])) {
+        return false;
+      }
+      return objIsEqual(obj1[key], obj2[key]);
+    }
+    if (isArray(obj1[key])) {
+      if (!isArray(obj2[key])) {
+        return false;
+      }
+      // Todo
+      return obj1[key].join(',') === obj2[key].join(',');
+    }
+    if (obj1[key] !== obj2[key]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+export function stringifyObjAndSort(obj: Record<string, string>) {
+  let keys = Object.keys(obj).sort();
+  let res = `{`;
+  for (let val of keys) {
+    res += `${val}:${obj[val]},`;
+  }
+  res.replace(/,$/, '');
+  res += '}';
+  return res;
+}

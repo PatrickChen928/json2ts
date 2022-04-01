@@ -1,5 +1,5 @@
 import type { AstChildNode, CompileOptions } from './types';
-import { isArray, isObject, upperCaseFirstChat } from './utils';
+import { isArray, isObject, upperCaseFirstChat, stringifyObjAndSort } from './utils';
 
 class Generate {
   private ast: AstChildNode
@@ -9,6 +9,7 @@ class Generate {
   private level: number;
   private prefix: string;
   private suffix: string;
+  private objValueMap: Map<string, string>;
 
   constructor(ast: AstChildNode, options: CompileOptions) {
     this.ast = ast;
@@ -18,6 +19,7 @@ class Generate {
     this.vars = '';
     this.i = -1;
     this.level = 1;
+    this.objValueMap = new Map();
   }
 
   beginGen() {
@@ -73,14 +75,23 @@ class Generate {
     this.level++;
     const objType = this.gen(type);
     if (this.options.splitType) {
-      const varName = this.genName(key);
-      this.vars += `type ${varName} = ${objType};\n\n`;
-      code += varName;
+      code += this.genObjectCodeWithVar(objType, key, type as Record<string, string>);
     } else {
       code += objType;
     }
     this.level--;
     return code;
+  }
+
+  genObjectCodeWithVar(objType: string, key: string, type: Record<string, string>) {
+    const val = stringifyObjAndSort(type);
+    if (this.objValueMap.has(val)) {
+      return this.objValueMap.get(val);
+    }
+    const varName = this.genName(key);
+    this.objValueMap.set(val, varName);
+    this.vars += `type ${varName} = ${objType};\n\n`;
+    return varName;
   }
 
   genArray(key: string, types: Array<any>) {
