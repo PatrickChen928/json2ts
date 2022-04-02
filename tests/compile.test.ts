@@ -192,3 +192,94 @@ describe('object reuse', () => {
     `)
   })
 });
+
+describe('comment block', () => {
+  const inputArray = `{
+    // This is 0 name
+    // This is 1 name
+    name: '1', 
+    arr: [ 
+      // this is arr 1
+      1, 
+      { 
+      // this is arr n
+      n: 2 } ], // This is arr
+    girlfriend: {
+      name: '2', // This is 2 name
+      hh: {
+        name: '3'  // This is 3 name,
+      }
+    } // This is girlfriend
+  }`;
+  it('expect', () => {
+    expect(json2ts(inputArray, { semicolon: true, parseArray: true,  indent: 2 })).toMatchInlineSnapshot(`
+      "type Arr\$1Type = {
+        // this is arr n
+        n: number;
+      };
+      
+      type Hh\$2Type = {
+        // This is 3 name,
+        name: string;
+      };
+      
+      type Girlfriend\$3Type = {
+        // This is 2 name
+        name: string;
+        hh: Hh\$2Type;
+      };
+      
+      type Result\$0Type = {
+        // This is 0 name
+        // This is 1 name
+        name: string;
+        // This is arr
+        arr: Array< number | Arr\$1Type >;
+        // This is girlfriend
+        girlfriend: Girlfriend\$3Type;
+      }"
+    `)
+  })
+});
+
+describe('comment inline', () => {
+  const inputArray = `{
+    // This is 0 name
+    // This is 1 name
+    name: '1', 
+    arr: [ 
+      // this is arr 1
+      1, 
+      { 
+      // this is arr n
+      n: 2 } ], // This is arr
+    girlfriend: {
+      name: '2', // This is 2 name
+      hh: {
+        name: '3'  // This is 3 name,
+      }
+    } // This is girlfriend
+  }`;
+  it('expect', () => {
+    expect(json2ts(inputArray, { semicolon: true, parseArray: true,  indent: 2, comment: 'inline' })).toMatchInlineSnapshot(`
+      "type Arr\$1Type = {
+        n: number; // this is arr n; 
+      };
+      
+      type Hh\$2Type = {
+        name: string; // This is 3 name,; 
+      };
+      
+      type Girlfriend\$3Type = {
+        name: string; // This is 2 name; 
+        hh: Hh\$2Type;
+      };
+      
+      type Result\$0Type = {
+        name: string; // This is 0 name; This is 1 name; 
+        arr: Array< number | Arr\$1Type >;
+        girlfriend: Girlfriend\$3Type;
+      }"
+    `)
+  })
+});

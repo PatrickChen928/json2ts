@@ -7,7 +7,7 @@
   "types": "types/index.d.ts",
   "scripts": {
     "build": "rollup -c",
-    "test": "vitest -u",
+    "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
     "coverage": "vitest run --coverage",

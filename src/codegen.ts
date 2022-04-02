@@ -1,23 +1,25 @@
-import type { AstChildNode, CompileOptions } from './types';
+import type { TransformNodeType, CompileOptions } from './types';
 import { isArray, isObject, upperCaseFirstChat, stringifyObjAndSort } from './utils';
 
 class Generate {
-  private ast: AstChildNode
+  private ast: TransformNodeType
   private options: CompileOptions;
   private vars: string;
   private i: number;
+  private j: number;
   private level: number;
   private prefix: string;
   private suffix: string;
   private objValueMap: Map<string, string>;
 
-  constructor(ast: AstChildNode, options: CompileOptions) {
+  constructor(ast: TransformNodeType, options: CompileOptions) {
     this.ast = ast;
     this.options = options;
     this.prefix = options.typePrefix;
     this.suffix = options.typeSuffix;
     this.vars = '';
-    this.i = -1;
+    this.i = 0;
+    this.j = -1;
     this.level = 1;
     this.objValueMap = new Map();
   }
@@ -33,6 +35,9 @@ class Generate {
     let code = `{\n`;
     for (const key in typeValue) {
       const type = typeValue[key];
+      if (this.options.comment === 'block') {
+        code += this.genBlockComment(key);
+      }
       code += this.genKey(key);
       if (isObject(type)) {
         code += this.genObjcet(key, type);
@@ -44,6 +49,9 @@ class Generate {
       if (this.options.semicolon) {
         code += ';';
       }
+      if (this.options.comment === 'inline') {
+        code += this.genInlineComment(key);
+      }
       code += '\n';
     }
     if (!this.options.splitType) {
@@ -54,8 +62,8 @@ class Generate {
   }
 
   genName(key: string) {
-    this.i++;
-    return `${this.prefix}${upperCaseFirstChat(key)}$${this.i}${this.suffix}`
+    this.j++;
+    return `${this.prefix}${upperCaseFirstChat(key)}$${this.j}${this.suffix}`
   }
 
   genKey(key: string) {
@@ -70,9 +78,35 @@ class Generate {
     return ' '.repeat(level * indent);
   }
 
+  genInlineComment(key: string) {
+    const name = key + this.i;
+    const comments = this.ast.comments[name];
+    if (comments && comments.length) {
+      let code = ' // ';
+      comments.forEach(comment => {
+        code += comment + '; ';
+      })
+      return code;
+    }
+    return '';
+  }
+
+  genBlockComment(key: string) {
+    let code = '';
+    const name = key + this.i;
+    const comments = this.ast.comments[name];
+    if (comments && comments.length) {
+      comments.forEach(comment => {
+        code += this.genFormatChat(this.level) + '// ' + comment + '\n';
+      })
+    }
+    return code;
+  }
+
   genObjcet(key:string, type: Record<string, string | Object>) {
     let code = '';
     this.level++;
+    this.i++;
     const objType = this.gen(type);
     if (this.options.splitType) {
       code += this.genObjectCodeWithVar(objType, key, type as Record<string, string>);
@@ -113,6 +147,6 @@ class Generate {
   }
 }
 
-export function generate(ast: AstChildNode, options: CompileOptions) {
+export function generate(ast: TransformNodeType, options: CompileOptions) {
   return new Generate(ast, options).beginGen();
 }

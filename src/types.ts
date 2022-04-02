@@ -5,7 +5,8 @@ export type CompileOptions = {
   semicolon?: boolean;
   typePrefix?: string;
   typeSuffix?: string;
-  indent?: number
+  indent?: number;
+  comment?: 'inline' | 'block' | false | 'false'
 }
 
 export type Position = {
@@ -34,12 +35,17 @@ export type AstChildNode = {
   value: string | AstChildNode[]
   type: string;
   loc?: LocType;
+}
+
+export type TransformNodeType = AstChildNode & {
   typeValue?: Record<string, string | Object> | Array<string | Object>;
+  comments?: Record<string, string[]>;
+  i?: number
 }
 
 export type Visiter = {
   [key: string]: {
-    entry?: (node: AstChildNode, parent: AstChildNode | null) => void;
-    exit?: (node: AstChildNode, parent: AstChildNode | null) => void;
+    entry?: (node: TransformNodeType, parent: TransformNodeType | null) => void;
+    exit?: (node: TransformNodeType, parent: TransformNodeType | null) => void;
   }
 }

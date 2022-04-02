@@ -6,14 +6,15 @@ import type { CompileOptions } from './types';
 
 
 function initOptions(options: CompileOptions): CompileOptions {
-  const defaultOptions = {
+  const defaultOptions: CompileOptions = {
     splitType: true,
     parseArray: false,
     required: true,
     semicolon: false,
     typeSuffix: 'Type',
     typePrefix: '',
-    indent: 2
+    indent: 2,
+    comment: 'block'
   };
   Object.assign(defaultOptions, options)
   return defaultOptions;

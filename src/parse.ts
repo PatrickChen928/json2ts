@@ -91,12 +91,24 @@ function advanceSpaces(context: ParserContext) {
 }
 
 function parseData(context: ParserContext, keyName?: string) {
+  const lastLine = getCursor(context).line;
   advanceSpaces(context);
   const start = getCursor(context);
-  const key = keyName || parseKey(context);
-  const { value, type } = parseValue(context);
-  const loc = getLoc(context, start);
-  advanceSpaces(context);
+  let key = keyName || parseKey(context);
+  let value, type, loc;
+  if (context.source.indexOf('//') === 0) {
+    const cv = parseComment(context, lastLine);
+    value = cv.value;
+    type = cv.type;
+    loc = cv.loc;
+    key = cv.key;
+  } else {
+    const { value: v, type: t } = parseValue(context);
+    value = v;
+    type = t;
+    loc = getLoc(context, start);
+    advanceSpaces(context);
+  }
   if (context.source[0] === ',') {
     advanceBy(context, 1);
     advanceSpaces(context);
@@ -127,8 +139,7 @@ function parseChildren(context: ParserContext) {
         if (lastNode) {
           lastLine = lastNode.loc.end.line;
         }
-        const currLine = getCursor(context).line;
-        nodes.push(parseComment(context, currLine === lastLine));
+        nodes.push(parseComment(context, lastLine));
         advanceSpaces(context);
       } else {
         throw new Error(COMMENT_ERROR_MESSAGE)
@@ -245,11 +256,12 @@ function parseArray(context: ParserContext) {
   throw new Error(ARRAY_ERROR_MESSAGE);
 }
 
-function parseComment(context: ParserContext, isLast: boolean) {
+function parseComment(context: ParserContext, lastLine: number) {
+  const currLine = getCursor(context).line;
+  const key = lastLine === currLine ? LAST_COMMENT : NEXT_COMMENT;
   const match = /^\/\/\s*(.[^\t\n\r\f]*)/i.exec(context.source);
   const start = getCursor(context);
   const comment = match[1];
-  const key = isLast ? LAST_COMMENT : NEXT_COMMENT;
   advanceBy(context, match[0].length);
   return {key, value: comment, type: COMMENT_TYPE, loc: getLoc(context, start)};
 }

@@ -19,6 +19,7 @@ describe('simple json', () => {
     const ast = transform(parse(json1));
     expect(ast).toMatchInlineSnapshot(`
       {
+        "comments": {},
         "key": "root",
         "type": "Root",
         "typeValue": {
@@ -27,6 +28,7 @@ describe('simple json', () => {
         },
         "value": [
           {
+            "i": 0,
             "key": "name",
             "loc": {
               "end": {
@@ -45,6 +47,7 @@ describe('simple json', () => {
             "value": "aphto",
           },
           {
+            "i": 0,
             "key": "age",
             "loc": {
               "end": {
