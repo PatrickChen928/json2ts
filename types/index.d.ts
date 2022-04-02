@@ -6,6 +6,7 @@ declare type CompileOptions = {
     typePrefix?: string;
     typeSuffix?: string;
     indent?: number;
+    comment?: 'inline' | 'block' | false | 'false';
 };
 declare type Position = {
     offset: number;
@@ -22,12 +23,16 @@ declare type AstChildNode = {
     value: string | AstChildNode[];
     type: string;
     loc?: LocType;
+};
+declare type TransformNodeType = AstChildNode & {
     typeValue?: Record<string, string | Object> | Array<string | Object>;
+    comments?: Record<string, string[]>;
+    i?: number;
 };
 declare type Visiter = {
     [key: string]: {
-        entry?: (node: AstChildNode, parent: AstChildNode | null) => void;
-        exit?: (node: AstChildNode, parent: AstChildNode | null) => void;
+        entry?: (node: TransformNodeType, parent: TransformNodeType | null) => void;
+        exit?: (node: TransformNodeType, parent: TransformNodeType | null) => void;
     };
 };
 
@@ -39,7 +44,7 @@ declare type Visiter = {
  */
 declare function parse(input: string, options?: CompileOptions): AstChildNode;
 
-declare function traverser(ast: AstChildNode, visiter: Visiter): AstChildNode;
+declare function traverser(ast: TransformNodeType, visiter: Visiter): TransformNodeType;
 
 declare const ROOT_TYPE = "Root";
 declare const STRING_TYPE = "string";

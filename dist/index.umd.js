@@ -145,16 +145,28 @@
   }
 
   function parseData(context, keyName) {
+    var lastLine = getCursor(context).line;
     advanceSpaces(context);
     var start = getCursor(context);
     var key = keyName || parseKey(context);
+    var value, type, loc;
 
-    var _parseValue = parseValue(context),
-        value = _parseValue.value,
-        type = _parseValue.type;
+    if (context.source.indexOf("//") === 0) {
+      var cv = parseComment(context, lastLine);
+      value = cv.value;
+      type = cv.type;
+      loc = cv.loc;
+      key = cv.key;
+    } else {
+      var _parseValue = parseValue(context),
+          v = _parseValue.value,
+          t = _parseValue.type;
 
-    var loc = getLoc(context, start);
-    advanceSpaces(context);
+      value = v;
+      type = t;
+      loc = getLoc(context, start);
+      advanceSpaces(context);
+    }
 
     if (context.source[0] === ",") {
       advanceBy(context, 1);
@@ -191,8 +203,7 @@
             lastLine = lastNode.loc.end.line;
           }
 
-          var currLine = getCursor(context).line;
-          nodes.push(parseComment(context, currLine === lastLine));
+          nodes.push(parseComment(context, lastLine));
           advanceSpaces(context);
         } else {
           throw new Error(COMMENT_ERROR_MESSAGE);
@@ -314,11 +325,12 @@
     throw new Error(ARRAY_ERROR_MESSAGE);
   }
 
-  function parseComment(context, isLast) {
+  function parseComment(context, lastLine) {
+    var currLine = getCursor(context).line;
+    var key = lastLine === currLine ? LAST_COMMENT : NEXT_COMMENT;
     var match = /^\/\/\s*(.[^\t\n\r\f]*)/i.exec(context.source);
     var start = getCursor(context);
     var comment = match[1];
-    var key = isLast ? LAST_COMMENT : NEXT_COMMENT;
     advanceBy(context, match[0].length);
     return {
       key: key,
@@ -374,13 +386,41 @@
     return res;
   }
 
+  var cache = resetCache();
+
+  function resetCache() {
+    return {
+      comments: {},
+      i: 0,
+      lastI: null,
+      lastNode: null,
+      nextComment: []
+    };
+  }
+
   function normalEntryHandle(node, parent) {
+    node.i = cache.i;
+
     if (node.key === ARRAY_ITEM) {
+      cache.nextComment = [];
       parent.typeValue = parent.typeValue || [];
       parent.typeValue.push(node.type);
     } else {
       parent.typeValue = parent.typeValue || {};
       parent.typeValue[node.key] = node.type;
+      handleComment(node);
+    }
+  }
+
+  function handleComment(node) {
+    cache.lastNode = node;
+
+    if (cache.nextComment.length) {
+      var comments = cache.comments;
+      var key = node.key + cache.i;
+      comments[key] = comments[key] || [];
+      comments[key] = comments[key].concat(cache.nextComment);
+      cache.nextComment = [];
     }
   }
 
@@ -431,25 +471,40 @@
       }
     }), _defineProperty(_traverser, OBJECT_TYPE, {
       entry: function entry(node, parent) {
+        node.i = cache.i;
+        cache.i++;
+
         if (node.key === ARRAY_ITEM) {
+          cache.nextComment = [];
           parent.typeValue = parent.typeValue || [];
           node.typeValue = {};
           parent.typeValue.push(node.typeValue);
         } else {
           parent.typeValue = parent.typeValue || {};
           parent.typeValue[node.key] = node.typeValue = {};
+          handleComment(node);
         }
+      },
+      exit: function exit(node) {
+        cache.lastNode = node;
       }
     }), _defineProperty(_traverser, ARRAY_TYPE, {
       entry: function entry(node, parent) {
+        node.i = cache.i;
+
         if (node.key === ARRAY_ITEM) {
+          cache.nextComment = [];
           parent.typeValue = parent.typeValue || [];
           node.typeValue = [];
           parent.typeValue.push(node.typeValue);
         } else {
           parent.typeValue = parent.typeValue || {};
           parent.typeValue[node.key] = node.typeValue = [];
+          handleComment(node);
         }
+      },
+      exit: function exit(node) {
+        cache.lastNode = node;
       }
     }), _defineProperty(_traverser, NULL_TYPE, {
       entry: function entry(node, parent) {
@@ -463,7 +518,20 @@
       entry: function entry(node, parent) {
         normalEntryHandle(node, parent);
       }
+    }), _defineProperty(_traverser, COMMENT_TYPE, {
+      entry: function entry(node) {
+        if (node.key === LAST_COMMENT) {
+          var key = cache.lastNode.key + cache.lastNode.i;
+          cache.comments[key] = cache.comments[key] || [];
+          cache.comments[key].push(node.value);
+        } else {
+          cache.nextComment.push(node.value);
+        }
+      }
     }), _traverser));
+    ast.comments = cache.comments;
+    cache = resetCache();
+    console.log(ast.comments);
     return ast;
   }
 
@@ -476,7 +544,8 @@
       this.prefix = options.typePrefix;
       this.suffix = options.typeSuffix;
       this.vars = "";
-      this.i = -1;
+      this.i = 0;
+      this.j = -1;
       this.level = 1;
       this.objValueMap = /* @__PURE__ */new Map();
     }
@@ -496,6 +565,11 @@
 
         for (var key in typeValue) {
           var type = typeValue[key];
+
+          if (this.options.comment === "block") {
+            code += this.genBlockComment(key);
+          }
+
           code += this.genKey(key);
 
           if (isObject(type)) {
@@ -508,6 +582,10 @@
 
           if (this.options.semicolon) {
             code += ";";
+          }
+
+          if (this.options.comment === "inline") {
+            code += this.genInlineComment(key);
           }
 
           code += "\n";
@@ -523,8 +601,8 @@
     }, {
       key: "genName",
       value: function genName(key) {
-        this.i++;
-        return "".concat(this.prefix).concat(upperCaseFirstChat(key), "$").concat(this.i).concat(this.suffix);
+        this.j++;
+        return "".concat(this.prefix).concat(upperCaseFirstChat(key), "$").concat(this.j).concat(this.suffix);
       }
     }, {
       key: "genKey",
@@ -543,10 +621,44 @@
         return " ".repeat(level * indent);
       }
     }, {
+      key: "genInlineComment",
+      value: function genInlineComment(key) {
+        var name = key + this.i;
+        var comments = this.ast.comments[name];
+
+        if (comments && comments.length) {
+          var code = " // ";
+          comments.forEach(function (comment) {
+            code += comment + "; ";
+          });
+          return code;
+        }
+
+        return "";
+      }
+    }, {
+      key: "genBlockComment",
+      value: function genBlockComment(key) {
+        var _this = this;
+
+        var code = "";
+        var name = key + this.i;
+        var comments = this.ast.comments[name];
+
+        if (comments && comments.length) {
+          comments.forEach(function (comment) {
+            code += _this.genFormatChat(_this.level) + "// " + comment + "\n";
+          });
+        }
+
+        return code;
+      }
+    }, {
       key: "genObjcet",
       value: function genObjcet(key, type) {
         var code = "";
         this.level++;
+        this.i++;
         var objType = this.gen(type);
 
         if (this.options.splitType) {
@@ -575,17 +687,17 @@
     }, {
       key: "genArray",
       value: function genArray(key, types) {
-        var _this = this;
+        var _this2 = this;
 
         var code = "Array< ";
         var arrTypes = /* @__PURE__ */new Set();
         types.forEach(function (type) {
           if (isArray(type)) {
-            arrTypes.add(_this.genArray(key, type));
+            arrTypes.add(_this2.genArray(key, type));
           }
 
           if (isObject(type)) {
-            arrTypes.add(_this.genObjcet(key, type));
+            arrTypes.add(_this2.genObjcet(key, type));
           } else {
             arrTypes.add(type);
           }
@@ -611,7 +723,8 @@
       semicolon: false,
       typeSuffix: "Type",
       typePrefix: "",
-      indent: 2
+      indent: 2,
+      comment: false
     };
     Object.assign(defaultOptions, options);
     return defaultOptions;

@@ -6,6 +6,7 @@ declare type CompileOptions = {
     typePrefix?: string;
     typeSuffix?: string;
     indent?: number;
+    comment?: 'inline' | 'block' | false | 'false';
 };
 declare type Position = {
     offset: number;
@@ -22,7 +23,6 @@ declare type AstChildNode = {
     value: string | AstChildNode[];
     type: string;
     loc?: LocType;
-    typeValue?: Record<string, string | Object> | Array<string | Object>;
 };
 
 /**
