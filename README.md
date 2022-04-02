@@ -32,7 +32,7 @@ pnpm i @cyly/json2ts
 
 <script src="index.umd.min.js"></script>
 
-json2ts.json2ts('{ name: 'apha' }', {
+json2ts.json2ts(`{ name: 'apha' }`, {
     semicolon: true
 });
 ```
@@ -43,15 +43,15 @@ json2ts.json2ts('{ name: 'apha' }', {
 ```javascript
 import json2ts from '@cyly/json2ts';
 
-const json = {
+const json = `{
   "a": 123,
   "b": {
     "c": "123"
   },
   d: [1, 2, 3]
-};
+}`;
 
-const result = json2ts(JSON.stringify(json), {
+const result = json2ts(json, {
     semicolon: true
 });
 ```
@@ -73,22 +73,24 @@ const result = json2ts(JSON.stringify(json), {
 #### typeSuffix
 `string`. Default：`Type`. type name suffix. exp: config `Temp`,name will be `KeyName$0Temp`
 #### indent
-`number`. Default：2. output indent format.
+`number`. Default：`2`. output indent format.
+#### comment
+`'inline' | 'block' | false`. Default：`false`. output with comment.
 
 ### parse
 
 ```javascript
 import { parse } from '@cyly/json2ts';
 
-const json = {
+const json = `{
   "a": 123,
   "b": {
     "c": "123"
   },
   d: [1, 2, 3]
-};
+}`;
 
-const ast = parse(JSON.stringify(json));
+const ast = parse(json);
 ```
 
 ### traverser
@@ -96,15 +98,15 @@ const ast = parse(JSON.stringify(json));
 ```javascript
 import { traverser, STRING_TYPE, ARRAY_TYPE } from '@cyly/json2ts';
 
-const json = {
+const json = `{
   "a": 123,
   "b": {
     "c": "123"
   },
   d: [1, 2, 3]
-};
+}`;
 
-const ast = parse(JSON.stringify(json));
+const ast = parse(json);
 
 traverser(ast, {
   [STRING_TYPE]: {

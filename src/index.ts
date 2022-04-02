@@ -14,7 +14,7 @@ function initOptions(options: CompileOptions): CompileOptions {
     typeSuffix: 'Type',
     typePrefix: '',
     indent: 2,
-    comment: 'block'
+    comment: false
   };
   Object.assign(defaultOptions, options)
   return defaultOptions;

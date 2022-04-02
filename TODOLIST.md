@@ -1,8 +1,8 @@
 ## TODO
 
-- [ ] Type resuse and inherit
-- [ ] generate comment
-- [ ] `required` config with key
-- [ ] parse `function`
+- [x] Type resuse
+- [x] generate comment
 - [x] output format
-- [ ] transform JSON to string
+- [ ] `required` config with key
+- [ ] Type inherit
+- [ ] parse `function`
