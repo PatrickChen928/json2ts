@@ -592,6 +592,7 @@ var Generate = /*#__PURE__*/function () {
         comments.forEach(function (comment) {
           code += comment + "; ";
         });
+        code.replace(/; $/, "");
         return code;
       }
 

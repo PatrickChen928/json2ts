@@ -86,6 +86,7 @@ class Generate {
       comments.forEach(comment => {
         code += comment + '; ';
       })
+      code = code.substring(0, code.length - 2)
       return code;
     }
     return '';

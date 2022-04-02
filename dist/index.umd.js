@@ -631,6 +631,7 @@
           comments.forEach(function (comment) {
             code += comment + "; ";
           });
+          code.replace(/; $/, "");
           return code;
         }
 

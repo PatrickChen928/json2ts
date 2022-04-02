@@ -305,20 +305,20 @@ describe('comment inline', () => {
   it('expect', () => {
     expect(json2ts(inputArray, { semicolon: true, parseArray: true,  indent: 2, comment: 'inline' })).toMatchInlineSnapshot(`
       "type Arr\$1Type = {
-        n: number; // this is arr n; 
+        n: number; // this is arr n
       };
       
       type Hh\$2Type = {
-        name: string; // This is 3 name,; 
+        name: string; // This is 3 name,
       };
       
       type Girlfriend\$3Type = {
-        name: string; // This is 2 name; 
+        name: string; // This is 2 name
         hh: Hh\$2Type;
       };
       
       type Result\$0Type = {
-        name: string; // This is 0 name; This is 1 name; 
+        name: string; // This is 0 name; This is 1 name
         arr: Array< number | Arr\$1Type >;
         girlfriend: Girlfriend\$3Type;
       }"
