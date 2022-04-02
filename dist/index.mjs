@@ -106,28 +106,16 @@ function advanceSpaces(context) {
 }
 
 function parseData(context, keyName) {
-  var lastLine = getCursor(context).line;
   advanceSpaces(context);
   var start = getCursor(context);
   var key = keyName || parseKey(context);
-  var value, type, loc;
 
-  if (context.source.indexOf("//") === 0) {
-    var cv = parseComment(context, lastLine);
-    value = cv.value;
-    type = cv.type;
-    loc = cv.loc;
-    key = cv.key;
-  } else {
-    var _parseValue = parseValue(context),
-        v = _parseValue.value,
-        t = _parseValue.type;
+  var _parseValue = parseValue(context),
+      value = _parseValue.value,
+      type = _parseValue.type;
 
-    value = v;
-    type = t;
-    loc = getLoc(context, start);
-    advanceSpaces(context);
-  }
+  var loc = getLoc(context, start);
+  advanceSpaces(context);
 
   if (context.source[0] === ",") {
     advanceBy(context, 1);
@@ -268,9 +256,20 @@ function parseValue(context) {
 
 function parseArray(context) {
   var nodes = [];
+  var lastLine = getCursor(context).line;
+  advanceSpaces(context);
 
   while (!isEnd(context)) {
-    nodes.push(parseData(context, ARRAY_ITEM));
+    if (context.source.indexOf("//") === 0) {
+      var cv = parseComment(context, lastLine);
+      nodes.push(cv);
+      advanceSpaces(context);
+    } else {
+      var itemValue = parseData(context, ARRAY_ITEM);
+      lastLine = itemValue.loc.end.line;
+      nodes.push(itemValue);
+    }
+
     var s = context.source[0];
 
     if (s === "]") {
@@ -491,8 +490,8 @@ function transform(ast, options) {
     }
   }), _traverser));
   ast.comments = cache.comments;
-  cache = resetCache();
   console.log(ast.comments);
+  cache = resetCache();
   return ast;
 }
 

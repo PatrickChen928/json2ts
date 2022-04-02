@@ -158,6 +158,7 @@ export function transform(ast: TransformNodeType, options?: CompileOptions) {
     }
   });
   ast.comments = cache.comments;
+  console.log(ast.comments)
   cache = resetCache();
   return ast;
 }

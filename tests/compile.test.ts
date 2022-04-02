@@ -325,3 +325,27 @@ describe('comment inline', () => {
     `)
   })
 });
+
+describe('comment inline', () => {
+  const inputArray = `{ 
+    // This is a name key
+    name: "bengbeng", // His name is bengbeng
+    age: 20, // This is his age
+    interest: [ 
+      // 2
+      'swim', 
+      // 3
+      'football', 
+      // 4
+      22 ]
+  }`;
+  it('expect', () => {
+    expect(json2ts(inputArray, { semicolon: true, parseArray: true,  indent: 2, comment: 'inline' })).toMatchInlineSnapshot(`
+      "type Result\$0Type = {
+        name: string; // This is a name key; His name is bengbeng
+        age: number; // This is his age
+        interest: Array< string | number >;
+      }"
+    `)
+  })
+});

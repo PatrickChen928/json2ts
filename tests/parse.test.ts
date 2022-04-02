@@ -9,7 +9,9 @@ import {
   UNDEFINED_TYPE, 
   ARRAY_ERROR_MESSAGE, 
   COMMENT_ERROR_MESSAGE,
-  VALUE_ILLEGAL_ERROR_MESSAGE
+  VALUE_ILLEGAL_ERROR_MESSAGE,
+  NEXT_COMMENT,
+  LAST_COMMENT
 } from '../src';
 import type { AstChildNode } from '../src/types';
 
@@ -66,6 +68,34 @@ describe('array should be closed', () => {
   it('expect', () => {
     expect(() => parse(json1)).toThrow(VALUE_ILLEGAL_ERROR_MESSAGE);
     expect(() => parse(json2)).toThrow(ARRAY_ERROR_MESSAGE);
+  })
+})
+
+describe('array item comment', () => {
+  // 数组没有闭合，会继续往下解析，把girlfriend当成value，所以会提示 VALUE_ILLEGAL_ERROR_MESSAGE
+  const json1 = `{ 
+    // This is a name key
+    name: "bengbeng", // His name is bengbeng
+    age: 20, // This is his age
+    interest: [ 
+      // 2
+      // 2-1
+      'swim', // inline swim
+      // 3
+      'football', 
+      // 4
+      22 // 5 
+    ]
+  }`;
+  let res = (parse(json1).value[5] as AstChildNode).value as AstChildNode[];
+  console.log(res);
+  it('expect', () => {
+    expect(res[0].key).toEqual(NEXT_COMMENT);
+    expect(res[1].key).toEqual(NEXT_COMMENT);
+    expect(res[3].key).toEqual(LAST_COMMENT);
+    expect(res[4].key).toEqual(NEXT_COMMENT);
+    expect(res[6].key).toEqual(NEXT_COMMENT);
+    expect(res[8].key).toEqual(LAST_COMMENT);
   })
 })
 

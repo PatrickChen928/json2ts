@@ -91,24 +91,25 @@ function advanceSpaces(context: ParserContext) {
 }
 
 function parseData(context: ParserContext, keyName?: string) {
-  const lastLine = getCursor(context).line;
   advanceSpaces(context);
   const start = getCursor(context);
   let key = keyName || parseKey(context);
-  let value, type, loc;
-  if (context.source.indexOf('//') === 0) {
-    const cv = parseComment(context, lastLine);
-    value = cv.value;
-    type = cv.type;
-    loc = cv.loc;
-    key = cv.key;
-  } else {
-    const { value: v, type: t } = parseValue(context);
-    value = v;
-    type = t;
-    loc = getLoc(context, start);
-    advanceSpaces(context);
-  }
+  // let value, type, loc;
+  const { value, type } = parseValue(context);
+  const loc = getLoc(context, start);
+  // if (context.source.indexOf('//') === 0) {
+  //   const cv = parseComment(context, lastLine);
+  //   value = cv.value;
+  //   type = cv.type;
+  //   loc = cv.loc;
+  //   key = cv.key;
+  // } else {
+  //   const { value: v, type: t } = parseValue(context);
+  //   value = v;
+  //   type = t;
+  //   loc = getLoc(context, start);
+  // }
+  advanceSpaces(context);
   if (context.source[0] === ',') {
     advanceBy(context, 1);
     advanceSpaces(context);
@@ -242,8 +243,21 @@ function parseValue(context: ParserContext) {
 
 function parseArray(context: ParserContext) {
   const nodes = [];
+  let lastLine = getCursor(context).line;
+  advanceSpaces(context);
   while(!isEnd(context)) {
-    nodes.push(parseData(context, ARRAY_ITEM));
+    // array item 的注释
+    if (context.source.indexOf('//') === 0) {
+      const cv = parseComment(context, lastLine);
+      nodes.push(cv);
+      // 这里不需要重置lastLine， 因为如果下一个还是注释，肯定是next_comment，
+      advanceSpaces(context);
+    } else {
+      const itemValue = parseData(context, ARRAY_ITEM);
+      // 缓存上一个node的注释
+      lastLine = itemValue.loc.end.line;
+      nodes.push(itemValue);
+    }
     const s = context.source[0];
     if (s === ']') {
       advanceBy(context, 1);
