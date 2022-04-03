@@ -96,20 +96,35 @@ describe('array parse', () => {
 
 
 describe('not splitType', () => {
-  const inputArray = `{
-    "name": { 
-      key: {
-        val: 3
-      }
+  const inputArray = `{ 
+    // This is a name key
+    name: "bengbeng", // His name is bengbeng
+    age: 20, // This is his age
+    interest: [ 'swim', 'football', 22 ]
+    girlfriend: {
+      name: "qiaqia",
+      age: 18,
+      "exboyfriend": [
+        {
+        name: "uzzz",
+          age: 40
+        }
+      ]
     }
   }`;
   it('expect', () => {
-    expect(json2ts(inputArray, { semicolon: true, parseArray: true, splitType: false })).toMatchInlineSnapshot(`
+    expect(json2ts(inputArray, { semicolon: true, parseArray: true, splitType: false, comment: 'inline' })).toMatchInlineSnapshot(`
       "type Result\$0Type = {
-        name: {
-          key: {
-            val: number;
-          };
+        name: string; // This is a name key; His name is bengbeng
+        age: number; // This is his age
+        interest: Array< string | number >;
+        girlfriend: {
+          name: string;
+          age: number;
+          exboyfriend: Array< {
+            name: string;
+            age: number;
+          } >;
         };
       }"
     `)
@@ -240,12 +255,14 @@ describe('comment block', () => {
     // This is 0 name
     // This is 1 name
     name: '1', 
+    // This is prefix arr
     arr: [ 
       // this is arr 1
       1, 
       { 
       // this is arr n
       n: 2 } ], // This is arr
+    // girlfriend prefix comment
     girlfriend: {
       name: '2', // This is 2 name
       hh: {
@@ -275,8 +292,10 @@ describe('comment block', () => {
         // This is 0 name
         // This is 1 name
         name: string;
+        // This is prefix arr
         // This is arr
         arr: Array< number | Arr\$1Type >;
+        // girlfriend prefix comment
         // This is girlfriend
         girlfriend: Girlfriend\$3Type;
       }"
@@ -289,12 +308,14 @@ describe('comment inline', () => {
     // This is 0 name
     // This is 1 name
     name: '1', 
+    // This is prefix arr
     arr: [ 
       // this is arr 1
       1, 
       { 
       // this is arr n
       n: 2 } ], // This is arr
+      // girlfriend prefix comment
     girlfriend: {
       name: '2', // This is 2 name
       hh: {
@@ -319,32 +340,8 @@ describe('comment inline', () => {
       
       type Result\$0Type = {
         name: string; // This is 0 name; This is 1 name
-        arr: Array< number | Arr\$1Type >;
-        girlfriend: Girlfriend\$3Type;
-      }"
-    `)
-  })
-});
-
-describe('comment inline', () => {
-  const inputArray = `{ 
-    // This is a name key
-    name: "bengbeng", // His name is bengbeng
-    age: 20, // This is his age
-    interest: [ 
-      // 2
-      'swim', 
-      // 3
-      'football', 
-      // 4
-      22 ]
-  }`;
-  it('expect', () => {
-    expect(json2ts(inputArray, { semicolon: true, parseArray: true,  indent: 2, comment: 'inline' })).toMatchInlineSnapshot(`
-      "type Result\$0Type = {
-        name: string; // This is a name key; His name is bengbeng
-        age: number; // This is his age
-        interest: Array< string | number >;
+        arr: Array< number | Arr\$1Type >; // This is prefix arr; This is arr
+        girlfriend: Girlfriend\$3Type; // girlfriend prefix comment; This is girlfriend
       }"
     `)
   })

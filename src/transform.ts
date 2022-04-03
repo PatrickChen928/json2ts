@@ -37,17 +37,35 @@ function normalEntryHandle(node: TransformNodeType, parent: TransformNodeType) {
   } else {
     parent.typeValue = parent.typeValue || {};
     parent.typeValue[node.key] = node.type;
-    handleComment(node);
+    handleNormalNodeComment(node);
   }
 }
 
-function handleComment(node: TransformNodeType) {
+function handleNormalNodeComment(node: TransformNodeType) {
   cache.lastNode = node;
   if (cache.nextComment.length) {
     const comments = cache.comments;
     const key = node.key + cache.i;
     comments[key] = comments[key] || [];
     comments[key] = comments[key].concat(cache.nextComment);
+    cache.nextComment = [];
+  }
+}
+
+function cacheObjectComment(node: TransformNodeType) {
+  if (cache.nextComment.length) {
+    // 先缓存到节点上, 在 exit 中读取
+    node.nextComment = cache.nextComment;
+    cache.nextComment = [];
+  }
+}
+
+function handleObjectNodeComment(node: TransformNodeType) {
+  if (node.nextComment) {
+    const comments = cache.comments;
+    const key = node.key + node.i;
+    comments[key] = comments[key] || [];
+    comments[key] = comments[key].concat(node.nextComment);
     cache.nextComment = [];
   }
 }
@@ -93,8 +111,6 @@ export function transform(ast: TransformNodeType, options?: CompileOptions) {
     },
     [OBJECT_TYPE]: {
       entry(node, parent) {
-        node.i = cache.i;
-        cache.i++;
         if (node.key === ARRAY_ITEM) {
           // 数组的item的注释没什么意义，清空
           cache.nextComment = [];
@@ -104,16 +120,26 @@ export function transform(ast: TransformNodeType, options?: CompileOptions) {
         } else {
           parent.typeValue = parent.typeValue || {};
           parent.typeValue[node.key] = node.typeValue = {};
-          handleComment(node);
+          // 因为对象还得继续往内解析，所以需要在exit里面写入comments。不然 i 会对不上
+          if (options.comment === 'inline') {
+            cacheObjectComment(node);
+          } else if (options.comment === 'block') {
+            handleNormalNodeComment(node);
+          }
         }
+        node.i = cache.i;
+        cache.i++;
       },
       exit(node) {
+        if (options.comment === 'inline') {
+          node.i = cache.i;
+          handleObjectNodeComment(node);
+        }
         cache.lastNode = node;
       }
     },
     [ARRAY_TYPE]: {
       entry(node, parent) {
-        node.i = cache.i;
         if (node.key === ARRAY_ITEM) {
           // 数组的item的注释没什么意义，清空
           cache.nextComment = [];
@@ -123,10 +149,20 @@ export function transform(ast: TransformNodeType, options?: CompileOptions) {
         } else {
           parent.typeValue = parent.typeValue || {};
           parent.typeValue[node.key] = node.typeValue = [];
-          handleComment(node);
+          // 因为数组还得继续往内解析，所以需要在exit里面写入comments。不然 i 会对不上
+          if (options.comment === 'inline') {
+            cacheObjectComment(node);
+          } else if (options.comment === 'block') {
+            handleNormalNodeComment(node);
+          }
         }
+        node.i = cache.i;
       },
       exit(node) {
+        if (options.comment === 'inline') {
+          node.i = cache.i;
+          handleObjectNodeComment(node);
+        }
         cache.lastNode = node;
       }
     },
@@ -158,7 +194,6 @@ export function transform(ast: TransformNodeType, options?: CompileOptions) {
     }
   });
   ast.comments = cache.comments;
-  console.log(ast.comments)
   cache = resetCache();
   return ast;
 }

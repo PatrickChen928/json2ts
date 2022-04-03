@@ -40,7 +40,8 @@ export type AstChildNode = {
 export type TransformNodeType = AstChildNode & {
   typeValue?: Record<string, string | Object> | Array<string | Object>;
   comments?: Record<string, string[]>;
-  i?: number
+  i?: number;
+  nextComment?: string[]
 }
 
 export type Visiter = {

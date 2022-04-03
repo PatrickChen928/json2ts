@@ -28,6 +28,7 @@ declare type TransformNodeType = AstChildNode & {
     typeValue?: Record<string, string | Object> | Array<string | Object>;
     comments?: Record<string, string[]>;
     i?: number;
+    nextComment?: string[];
 };
 declare type Visiter = {
     [key: string]: {

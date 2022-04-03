@@ -368,11 +368,11 @@ function normalEntryHandle(node, parent) {
   } else {
     parent.typeValue = parent.typeValue || {};
     parent.typeValue[node.key] = node.type;
-    handleComment(node);
+    handleNormalNodeComment(node);
   }
 }
 
-function handleComment(node) {
+function handleNormalNodeComment(node) {
   cache.lastNode = node;
 
   if (cache.nextComment.length) {
@@ -380,6 +380,23 @@ function handleComment(node) {
     var key = node.key + cache.i;
     comments[key] = comments[key] || [];
     comments[key] = comments[key].concat(cache.nextComment);
+    cache.nextComment = [];
+  }
+}
+
+function cacheObjectComment(node) {
+  if (cache.nextComment.length) {
+    node.nextComment = cache.nextComment;
+    cache.nextComment = [];
+  }
+}
+
+function handleObjectNodeComment(node) {
+  if (node.nextComment) {
+    var comments = cache.comments;
+    var key = node.key + node.i;
+    comments[key] = comments[key] || [];
+    comments[key] = comments[key].concat(node.nextComment);
     cache.nextComment = [];
   }
 }
@@ -431,7 +448,6 @@ function transform(ast, options) {
     }
   }), _defineProperty(_traverser, OBJECT_TYPE, {
     entry: function entry(node, parent) {
-      node.i = cache.i;
       cache.i++;
 
       if (node.key === ARRAY_ITEM) {
@@ -442,16 +458,16 @@ function transform(ast, options) {
       } else {
         parent.typeValue = parent.typeValue || {};
         parent.typeValue[node.key] = node.typeValue = {};
-        handleComment(node);
+        cacheObjectComment(node);
       }
     },
     exit: function exit(node) {
+      node.i = cache.i;
       cache.lastNode = node;
+      handleObjectNodeComment(node);
     }
   }), _defineProperty(_traverser, ARRAY_TYPE, {
     entry: function entry(node, parent) {
-      node.i = cache.i;
-
       if (node.key === ARRAY_ITEM) {
         cache.nextComment = [];
         parent.typeValue = parent.typeValue || [];
@@ -460,11 +476,13 @@ function transform(ast, options) {
       } else {
         parent.typeValue = parent.typeValue || {};
         parent.typeValue[node.key] = node.typeValue = [];
-        handleComment(node);
+        cacheObjectComment(node);
       }
     },
     exit: function exit(node) {
+      node.i = cache.i;
       cache.lastNode = node;
+      handleObjectNodeComment(node);
     }
   }), _defineProperty(_traverser, NULL_TYPE, {
     entry: function entry(node, parent) {
@@ -490,7 +508,6 @@ function transform(ast, options) {
     }
   }), _traverser));
   ast.comments = cache.comments;
-  console.log(ast.comments);
   cache = resetCache();
   return ast;
 }
