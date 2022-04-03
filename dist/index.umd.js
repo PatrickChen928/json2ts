@@ -487,8 +487,6 @@
       }
     }), _defineProperty(_traverser, OBJECT_TYPE, {
       entry: function entry(node, parent) {
-        cache.i++;
-
         if (node.key === ARRAY_ITEM) {
           cache.nextComment = [];
           parent.typeValue = parent.typeValue || [];
@@ -497,13 +495,24 @@
         } else {
           parent.typeValue = parent.typeValue || {};
           parent.typeValue[node.key] = node.typeValue = {};
-          cacheObjectComment(node);
+
+          if (options.comment === "inline") {
+            cacheObjectComment(node);
+          } else if (options.comment === "block") {
+            handleNormalNodeComment(node);
+          }
         }
+
+        node.i = cache.i;
+        cache.i++;
       },
       exit: function exit(node) {
-        node.i = cache.i;
+        if (options.comment === "inline") {
+          node.i = cache.i;
+          handleObjectNodeComment(node);
+        }
+
         cache.lastNode = node;
-        handleObjectNodeComment(node);
       }
     }), _defineProperty(_traverser, ARRAY_TYPE, {
       entry: function entry(node, parent) {
@@ -515,13 +524,23 @@
         } else {
           parent.typeValue = parent.typeValue || {};
           parent.typeValue[node.key] = node.typeValue = [];
-          cacheObjectComment(node);
+
+          if (options.comment === "inline") {
+            cacheObjectComment(node);
+          } else if (options.comment === "block") {
+            handleNormalNodeComment(node);
+          }
         }
+
+        node.i = cache.i;
       },
       exit: function exit(node) {
-        node.i = cache.i;
+        if (options.comment === "inline") {
+          node.i = cache.i;
+          handleObjectNodeComment(node);
+        }
+
         cache.lastNode = node;
-        handleObjectNodeComment(node);
       }
     }), _defineProperty(_traverser, NULL_TYPE, {
       entry: function entry(node, parent) {
@@ -751,7 +770,7 @@
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     var finalOptions = initOptions(options);
     var ast = parse(code, finalOptions);
-    transform(ast);
+    transform(ast, finalOptions);
     return generate(ast, finalOptions);
   }
 });
