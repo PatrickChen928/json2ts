@@ -363,13 +363,16 @@ function resetCache() {
   };
 }
 
-function normalEntryHandle(node, parent) {
+function normalEntryHandle(node, parent, options) {
   node.i = cache.i;
 
   if (node.key === ARRAY_ITEM) {
     cache.nextComment = [];
-    parent.typeValue = parent.typeValue || [];
-    parent.typeValue.push(node.type);
+
+    if (options.parseArray) {
+      parent.typeValue = parent.typeValue || [];
+      parent.typeValue.push(node.type);
+    }
   } else {
     parent.typeValue = parent.typeValue || {};
     parent.typeValue[node.key] = node.type;
@@ -445,19 +448,24 @@ function transform(ast, options) {
 
   traverser(ast, (_traverser = {}, _defineProperty(_traverser, STRING_TYPE, {
     entry: function entry(node, parent) {
-      normalEntryHandle(node, parent);
+      normalEntryHandle(node, parent, options);
     }
   }), _defineProperty(_traverser, NUMBER_TYPE, {
     entry: function entry(node, parent) {
-      normalEntryHandle(node, parent);
+      normalEntryHandle(node, parent, options);
     }
   }), _defineProperty(_traverser, OBJECT_TYPE, {
     entry: function entry(node, parent) {
       if (node.key === ARRAY_ITEM) {
         cache.nextComment = [];
-        parent.typeValue = parent.typeValue || [];
-        node.typeValue = {};
-        parent.typeValue.push(node.typeValue);
+
+        if (options.parseArray) {
+          parent.typeValue = parent.typeValue || [];
+          node.typeValue = {};
+          parent.typeValue.push(node.typeValue);
+          node.i = cache.i;
+          cache.i++;
+        }
       } else {
         parent.typeValue = parent.typeValue || {};
         parent.typeValue[node.key] = node.typeValue = {};
@@ -467,10 +475,10 @@ function transform(ast, options) {
         } else if (options.comment === "block") {
           handleNormalNodeComment(node);
         }
-      }
 
-      node.i = cache.i;
-      cache.i++;
+        node.i = cache.i;
+        cache.i++;
+      }
     },
     exit: function exit(node) {
       if (options.comment === "inline") {
@@ -484,9 +492,12 @@ function transform(ast, options) {
     entry: function entry(node, parent) {
       if (node.key === ARRAY_ITEM) {
         cache.nextComment = [];
-        parent.typeValue = parent.typeValue || [];
-        node.typeValue = [];
-        parent.typeValue.push(node.typeValue);
+
+        if (options.parseArray) {
+          parent.typeValue = parent.typeValue || [];
+          node.typeValue = [];
+          parent.typeValue.push(node.typeValue);
+        }
       } else {
         parent.typeValue = parent.typeValue || {};
         parent.typeValue[node.key] = node.typeValue = [];
@@ -510,15 +521,15 @@ function transform(ast, options) {
     }
   }), _defineProperty(_traverser, NULL_TYPE, {
     entry: function entry(node, parent) {
-      normalEntryHandle(node, parent);
+      normalEntryHandle(node, parent, options);
     }
   }), _defineProperty(_traverser, BOOLEAN_TYPE, {
     entry: function entry(node, parent) {
-      normalEntryHandle(node, parent);
+      normalEntryHandle(node, parent, options);
     }
   }), _defineProperty(_traverser, UNDEFINED_TYPE, {
     entry: function entry(node, parent) {
-      normalEntryHandle(node, parent);
+      normalEntryHandle(node, parent, options);
     }
   }), _defineProperty(_traverser, COMMENT_TYPE, {
     entry: function entry(node) {

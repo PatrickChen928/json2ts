@@ -27,13 +27,15 @@ function resetCache() {
   }
 }
 
-function normalEntryHandle(node: TransformNodeType, parent: TransformNodeType) {
+function normalEntryHandle(node: TransformNodeType, parent: TransformNodeType, options: CompileOptions) {
   node.i = cache.i;
   if (node.key === ARRAY_ITEM) {
     // 数组的item的注释没什么意义，清空
     cache.nextComment = [];
-    parent.typeValue = parent.typeValue || [];
-    (parent.typeValue as Array<string | Object>).push(node.type);
+    if (options.parseArray) {
+      parent.typeValue = parent.typeValue || [];
+      (parent.typeValue as Array<string | Object>).push(node.type);
+    }
   } else {
     parent.typeValue = parent.typeValue || {};
     parent.typeValue[node.key] = node.type;
@@ -101,12 +103,12 @@ export function transform(ast: TransformNodeType, options?: CompileOptions) {
   traverser(ast, {
     [STRING_TYPE]: {
       entry(node, parent) {
-        normalEntryHandle(node, parent);
+        normalEntryHandle(node, parent, options);
       }
     },
     [NUMBER_TYPE]: {
       entry(node, parent) {
-        normalEntryHandle(node, parent);
+        normalEntryHandle(node, parent, options);
       }
     },
     [OBJECT_TYPE]: {
@@ -114,9 +116,13 @@ export function transform(ast: TransformNodeType, options?: CompileOptions) {
         if (node.key === ARRAY_ITEM) {
           // 数组的item的注释没什么意义，清空
           cache.nextComment = [];
-          parent.typeValue = parent.typeValue || [];
-          node.typeValue = {};
-          (parent.typeValue as Array<string | Object>).push(node.typeValue);
+          if (options.parseArray) {
+            parent.typeValue = parent.typeValue || [];
+            node.typeValue = {};
+            (parent.typeValue as Array<string | Object>).push(node.typeValue);
+            node.i = cache.i;
+            cache.i++;
+          }
         } else {
           parent.typeValue = parent.typeValue || {};
           parent.typeValue[node.key] = node.typeValue = {};
@@ -126,9 +132,9 @@ export function transform(ast: TransformNodeType, options?: CompileOptions) {
           } else if (options.comment === 'block') {
             handleNormalNodeComment(node);
           }
+          node.i = cache.i;
+          cache.i++;
         }
-        node.i = cache.i;
-        cache.i++;
       },
       exit(node) {
         if (options.comment === 'inline') {
@@ -143,9 +149,11 @@ export function transform(ast: TransformNodeType, options?: CompileOptions) {
         if (node.key === ARRAY_ITEM) {
           // 数组的item的注释没什么意义，清空
           cache.nextComment = [];
-          parent.typeValue = parent.typeValue || [];
-          node.typeValue = [];
-          (parent.typeValue as Array<string | Object>).push(node.typeValue);
+          if (options.parseArray) {
+            parent.typeValue = parent.typeValue || [];
+            node.typeValue = [];
+            (parent.typeValue as Array<string | Object>).push(node.typeValue);
+          }
         } else {
           parent.typeValue = parent.typeValue || {};
           parent.typeValue[node.key] = node.typeValue = [];
@@ -168,17 +176,17 @@ export function transform(ast: TransformNodeType, options?: CompileOptions) {
     },
     [NULL_TYPE]: {
       entry(node, parent) {
-        normalEntryHandle(node, parent);
+        normalEntryHandle(node, parent, options);
       }
     },
     [BOOLEAN_TYPE]: {
       entry(node, parent) {
-        normalEntryHandle(node, parent);
+        normalEntryHandle(node, parent, options);
       }
     },
     [UNDEFINED_TYPE]: {
       entry(node, parent) {
-        normalEntryHandle(node, parent);
+        normalEntryHandle(node, parent, options);
       }
     },
     [COMMENT_TYPE]: {

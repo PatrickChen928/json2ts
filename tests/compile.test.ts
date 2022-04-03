@@ -344,5 +344,21 @@ describe('comment inline', () => {
         girlfriend: Girlfriend\$3Type; // girlfriend prefix comment; This is girlfriend
       }"
     `)
+    expect(json2ts(inputArray, { semicolon: true, parseArray: false,  indent: 2, comment: 'inline' })).toMatchInlineSnapshot(`
+      "type Hh\$1Type = {
+        name: string; // This is 3 name,
+      };
+      
+      type Girlfriend\$2Type = {
+        name: string; // This is 2 name
+        hh: Hh\$1Type;
+      };
+      
+      type Result\$0Type = {
+        name: string; // This is 0 name; This is 1 name
+        arr: Array<any>; // This is prefix arr; This is arr
+        girlfriend: Girlfriend\$2Type; // girlfriend prefix comment; This is girlfriend
+      }"
+    `)
   })
 });
