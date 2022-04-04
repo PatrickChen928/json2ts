@@ -5,6 +5,13 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "types/index.d.ts",
+  "keywords": [
+    "frontend",
+    "json2ts",
+    "compile",
+    "tool",
+    "typescript"
+  ],
   "scripts": {
     "build": "rollup -c",
     "test": "vitest",
@@ -19,7 +26,7 @@
     "types/"
   ],
   "author": "cyly cp786156072@163.com",
-  "homepage": "https://github.com/ChpShy/json2ts#readme",
+  "homepage": "https://chpshy.github.io/json2ts/index.html",
   "bugs": {
     "url": "https://github.com/ChpShy/json2ts/issues"
   },
