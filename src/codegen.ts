@@ -28,7 +28,7 @@ class Generate {
     const originName = this.genName('Result');
     const typeValue = this.ast.typeValue!;
     const code = this.gen(typeValue);
-    return `${this.vars}type ${originName} = ${code}`;
+    return `${this.vars}type ${originName} = ${code}${this.options.semicolon ? ';' : ''}\n`;
   }
 
   gen(typeValue: Record<string, string | Object> | Array<string | Object>) {
@@ -125,7 +125,7 @@ class Generate {
     }
     const varName = this.genName(key);
     this.objValueMap.set(val, varName);
-    this.vars += `type ${varName} = ${objType};\n\n`;
+    this.vars += `type ${varName} = ${objType}${this.options.semicolon ? ';' : ''}\n\n`;
     return varName;
   }
 
