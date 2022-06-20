@@ -260,16 +260,6 @@ function parseArray(context) {
   advanceSpaces(context);
 
   while (!isEnd(context)) {
-    if (context.source.indexOf("//") === 0) {
-      var cv = parseComment(context, lastLine);
-      nodes.push(cv);
-      advanceSpaces(context);
-    } else {
-      var itemValue = parseData(context, ARRAY_ITEM);
-      lastLine = itemValue.loc.end.line;
-      nodes.push(itemValue);
-    }
-
     var s = context.source[0];
 
     if (s === "]") {
@@ -279,6 +269,16 @@ function parseArray(context) {
 
     if (s === "}" || s === ":") {
       throw new Error(ARRAY_ERROR_MESSAGE);
+    }
+
+    if (context.source.indexOf("//") === 0) {
+      var cv = parseComment(context, lastLine);
+      nodes.push(cv);
+      advanceSpaces(context);
+    } else {
+      var itemValue = parseData(context, ARRAY_ITEM);
+      lastLine = itemValue.loc.end.line;
+      nodes.push(itemValue);
     }
   }
 
@@ -696,6 +696,10 @@ var Generate = /*#__PURE__*/function () {
     key: "genArray",
     value: function genArray(key, types) {
       var _this2 = this;
+
+      if (types.length === 0) {
+        return "Array< unknow >";
+      }
 
       var code = "Array< ";
       var arrTypes = /* @__PURE__ */new Set();
