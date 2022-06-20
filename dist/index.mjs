@@ -563,7 +563,7 @@ var Generate = /*#__PURE__*/function () {
       var originName = this.genName("Result");
       var typeValue = this.ast.typeValue;
       var code = this.gen(typeValue);
-      return "".concat(this.vars, "type ").concat(originName, " = ").concat(code);
+      return "".concat(this.vars, "type ").concat(originName, " = ").concat(code).concat(this.options.semicolon ? ";" : "", "\n");
     }
   }, {
     key: "gen",
@@ -689,7 +689,7 @@ var Generate = /*#__PURE__*/function () {
 
       var varName = this.genName(key);
       this.objValueMap.set(val, varName);
-      this.vars += "type ".concat(varName, " = ").concat(objType, ";\n\n");
+      this.vars += "type ".concat(varName, " = ").concat(objType).concat(this.options.semicolon ? ";" : "", "\n\n");
       return varName;
     }
   }, {

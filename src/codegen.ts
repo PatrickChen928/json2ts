@@ -130,6 +130,9 @@ class Generate {
   }
 
   genArray(key: string, types: Array<any>) {
+    if (types.length === 0) {
+      return 'Array< unknow >';
+    }
     let code = `Array< `;
     // 使用 set 过滤重复类型
     const arrTypes = new Set();

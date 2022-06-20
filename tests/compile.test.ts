@@ -16,7 +16,8 @@ describe('empty json', () => {
       "type Result\$0Type = {
         name: string
         age: number
-      }"
+      }
+      "
     `)
   })
 });
@@ -27,7 +28,8 @@ describe('semicolon end', () => {
       "type Result\$0Type = {
         name: string;
         age: number;
-      }"
+      };
+      "
     `)
   })
 });
@@ -37,7 +39,8 @@ describe('null', () => {
     expect(json2ts(`{ name: null }`, { semicolon: true })).toMatchInlineSnapshot(`
       "type Result\$0Type = {
         name: null;
-      }"
+      };
+      "
     `)
   })
 });
@@ -47,7 +50,8 @@ describe('undefined', () => {
     expect(json2ts(`{ name: undefined }`, { semicolon: true })).toMatchInlineSnapshot(`
       "type Result\$0Type = {
         name: undefined;
-      }"
+      };
+      "
     `)
   })
 });
@@ -58,7 +62,8 @@ describe('boolean', () => {
       "type Result\$0Type = {
         name: boolean;
         key: boolean;
-      }"
+      };
+      "
     `)
   })
 });
@@ -73,7 +78,8 @@ describe('array any', () => {
       "type Result\$0Type = {
         name: string;
         arrName: Array<any>;
-      }"
+      };
+      "
     `)
   })
 });
@@ -89,7 +95,8 @@ describe('array parse', () => {
       type Result\$0Type = {
         name: string;
         arrName: Array< string | number | ArrName\$1Type >;
-      }"
+      };
+      "
     `)
   })
 });
@@ -126,7 +133,8 @@ describe('not splitType', () => {
             age: number;
           } >;
         };
-      }"
+      };
+      "
     `)
   })
 });
@@ -147,7 +155,8 @@ describe('indent', () => {
                   val: number;
               };
           };
-      }"
+      };
+      "
     `)
   })
 });
@@ -172,7 +181,8 @@ describe('indent + splitType', () => {
       
       type Result\$0Type = {
           name: Name\$2Type;
-      }"
+      };
+      "
     `)
   })
 });
@@ -203,7 +213,8 @@ describe('object reuse', () => {
         name: string;
         age: number;
         girlfriend: Array< Girlfriend\$1Type >;
-      }"
+      };
+      "
     `)
   })
 });
@@ -245,7 +256,8 @@ describe('comment false', () => {
         name: string;
         arr: Array< number | Arr\$1Type >;
         girlfriend: Girlfriend\$3Type;
-      }"
+      };
+      "
     `)
   })
 });
@@ -298,7 +310,8 @@ describe('comment block', () => {
         // girlfriend prefix comment
         // This is girlfriend
         girlfriend: Girlfriend\$3Type;
-      }"
+      };
+      "
     `)
   })
 });
@@ -342,7 +355,8 @@ describe('comment inline', () => {
         name: string; // This is 0 name; This is 1 name
         arr: Array< number | Arr\$1Type >; // This is prefix arr; This is arr
         girlfriend: Girlfriend\$3Type; // girlfriend prefix comment; This is girlfriend
-      }"
+      };
+      "
     `)
     expect(json2ts(inputArray, { semicolon: true, parseArray: false,  indent: 2, comment: 'inline' })).toMatchInlineSnapshot(`
       "type Hh\$1Type = {
@@ -358,7 +372,24 @@ describe('comment inline', () => {
         name: string; // This is 0 name; This is 1 name
         arr: Array<any>; // This is prefix arr; This is arr
         girlfriend: Girlfriend\$2Type; // girlfriend prefix comment; This is girlfriend
-      }"
+      };
+      "
+    `)
+  })
+});
+
+describe('empty array', () => {
+  const inputArray = `{
+    name: '1', 
+    arr: []
+  }`;
+  it('expect', () => {
+    expect(json2ts(inputArray, { semicolon: true, parseArray: true})).toMatchInlineSnapshot(`
+      "type Result\$0Type = {
+        name: string;
+        arr: Array< unknow >;
+      };
+      "
     `)
   })
 });

@@ -246,6 +246,14 @@ function parseArray(context: ParserContext) {
   let lastLine = getCursor(context).line;
   advanceSpaces(context);
   while(!isEnd(context)) {
+    const s = context.source[0];
+    if (s === ']') {
+      advanceBy(context, 1);
+      return nodes;
+    }
+    if (s === '}' || s === ':') {
+      throw new Error(ARRAY_ERROR_MESSAGE);
+    }
     // array item 的注释
     if (context.source.indexOf('//') === 0) {
       const cv = parseComment(context, lastLine);
@@ -257,14 +265,6 @@ function parseArray(context: ParserContext) {
       // 缓存上一个node的注释
       lastLine = itemValue.loc.end.line;
       nodes.push(itemValue);
-    }
-    const s = context.source[0];
-    if (s === ']') {
-      advanceBy(context, 1);
-      return nodes;
-    }
-    if (s === '}' || s === ':') {
-      throw new Error(ARRAY_ERROR_MESSAGE);
     }
   }
   throw new Error(ARRAY_ERROR_MESSAGE);
