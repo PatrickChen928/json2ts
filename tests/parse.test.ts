@@ -88,7 +88,6 @@ describe('array item comment', () => {
     ]
   }`;
   let res = (parse(json1).value[5] as AstChildNode).value as AstChildNode[];
-  console.log(res);
   it('expect', () => {
     expect(res[0].key).toEqual(NEXT_COMMENT);
     expect(res[1].key).toEqual(NEXT_COMMENT);
