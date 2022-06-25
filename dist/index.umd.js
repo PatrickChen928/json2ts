@@ -392,7 +392,6 @@
     var objCount = 0;
     var newTypes = [];
     var typeObj = {};
-    console.log(arrTypes);
 
     var _loop = function _loop(i) {
       var type = arrTypes[i];
@@ -422,7 +421,11 @@
         optionalKeys.push(key);
       }
     });
-    newTypes.push(typeObj);
+
+    if (Object.keys(typeObj).length) {
+      newTypes.push(typeObj);
+    }
+
     return {
       optionalKeys: optionalKeys,
       newTypes: newTypes
