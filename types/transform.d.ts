@@ -7,6 +7,8 @@ declare type CompileOptions = {
     typeSuffix?: string;
     indent?: number;
     comment?: 'inline' | 'block' | false | 'false';
+    optimizeArrayOptional?: boolean;
+    genType?: 'type' | 'interface';
 };
 declare type Position = {
     offset: number;

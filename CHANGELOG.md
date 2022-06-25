@@ -1,3 +1,14 @@
+## [0.1.2](https://github.com/ChpShy/json2ts/compare/v0.1.0...v0.1.1) (2022-06-21)
+
+### Features
+- add `genType` option
+- add `optimizeArrayOptional` option
+
+## [0.1.1](https://github.com/ChpShy/json2ts/compare/v0.1.0...v0.1.1) (2022-06-21)
+
+### Bug Fixes
+- fix empty array bug
+
 ## [0.1.0](https://github.com/ChpShy/json2ts/compare/v0.0.5...v0.1.0) (2022-03-31)
 
 ### Bug Fixes

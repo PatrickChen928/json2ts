@@ -346,6 +346,74 @@ function stringifyObjAndSort(obj) {
   return res;
 }
 
+function optimizeArray(arrTypes) {
+  var root = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
+  var optionalKeys = [];
+  var keyCountMap = {};
+  var objCount = 0;
+  var newTypes = [];
+  var typeObj = {};
+  console.log(arrTypes);
+
+  var _loop = function _loop(i) {
+    var type = arrTypes[i];
+
+    if (isObject(type)) {
+      objCount++;
+      Object.keys(type).forEach(function (key) {
+        typeObj[key] = type[key];
+
+        if (keyCountMap["".concat(root, ">").concat(key)]) {
+          keyCountMap["".concat(root, ">").concat(key)] += 1;
+        } else {
+          keyCountMap["".concat(root, ">").concat(key)] = 1;
+        }
+      });
+    } else {
+      newTypes.push(type);
+    }
+  };
+
+  for (var i = 0; i < arrTypes.length; i++) {
+    _loop(i);
+  }
+
+  Object.keys(keyCountMap).forEach(function (key) {
+    if (keyCountMap[key] < objCount) {
+      optionalKeys.push(key);
+    }
+  });
+  newTypes.push(typeObj);
+  return {
+    optionalKeys: optionalKeys,
+    newTypes: newTypes
+  };
+}
+
+function isOptional(optionalKeys, key) {
+  var parent = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
+  var newKey = parent + ">" + key;
+
+  var _iterator2 = _createForOfIteratorHelper(optionalKeys),
+      _step2;
+
+  try {
+    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+      var optionalKey = _step2.value;
+
+      if (newKey === optionalKey) {
+        return true;
+      }
+    }
+  } catch (err) {
+    _iterator2.e(err);
+  } finally {
+    _iterator2.f();
+  }
+
+  return false;
+}
+
 var cache = resetCache();
 
 function resetCache() {
@@ -563,11 +631,13 @@ var Generate = /*#__PURE__*/function () {
       var originName = this.genName("Result");
       var typeValue = this.ast.typeValue;
       var code = this.gen(typeValue);
-      return "".concat(this.vars, "type ").concat(originName, " = ").concat(code).concat(this.options.semicolon ? ";" : "", "\n");
+      var isInterface = this.options.genType === "interface";
+      return "".concat(this.vars).concat(this.options.genType, " ").concat(originName).concat(isInterface ? "" : " =", " ").concat(code).concat(this.options.semicolon ? ";" : "", "\n");
     }
   }, {
     key: "gen",
     value: function gen(typeValue) {
+      var optionalKeys = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
       var code = "{\n";
 
       for (var key in typeValue) {
@@ -577,7 +647,7 @@ var Generate = /*#__PURE__*/function () {
           code += this.genBlockComment(key);
         }
 
-        code += this.genKey(key);
+        code += this.genKey(key, isOptional(optionalKeys, key));
 
         if (isObject(type)) {
           code += this.genObjcet(key, type);
@@ -614,7 +684,8 @@ var Generate = /*#__PURE__*/function () {
   }, {
     key: "genKey",
     value: function genKey(key) {
-      return "".concat(this.genFormatChat(this.level)).concat(key).concat(this.options.required ? ": " : "?: ");
+      var optional = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      return "".concat(this.genFormatChat(this.level)).concat(key).concat(this.options.required && !optional ? ": " : "?: ");
     }
   }, {
     key: "genFormatChat",
@@ -664,10 +735,11 @@ var Generate = /*#__PURE__*/function () {
   }, {
     key: "genObjcet",
     value: function genObjcet(key, type) {
+      var optionalKeys = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
       var code = "";
       this.level++;
       this.i++;
-      var objType = this.gen(type);
+      var objType = this.gen(type, optionalKeys);
 
       if (this.options.splitType) {
         code += this.genObjectCodeWithVar(objType, key, type);
@@ -688,8 +760,9 @@ var Generate = /*#__PURE__*/function () {
       }
 
       var varName = this.genName(key);
+      var isInterface = this.options.genType === "interface";
       this.objValueMap.set(val, varName);
-      this.vars += "type ".concat(varName, " = ").concat(objType).concat(this.options.semicolon ? ";" : "", "\n\n");
+      this.vars += "".concat(this.options.genType, " ").concat(varName).concat(isInterface ? "" : " =", " ").concat(objType).concat(this.options.semicolon ? ";" : "", "\n\n");
       return varName;
     }
   }, {
@@ -703,13 +776,24 @@ var Generate = /*#__PURE__*/function () {
 
       var code = "Array< ";
       var arrTypes = /* @__PURE__ */new Set();
+      var optionalKeys = [];
+
+      if (this.options.optimizeArrayOptional) {
+        var _optimizeArray = optimizeArray(types),
+            keys = _optimizeArray.optionalKeys,
+            newTypes = _optimizeArray.newTypes;
+
+        optionalKeys = keys;
+        types = newTypes;
+      }
+
       types.forEach(function (type) {
         if (isArray(type)) {
           arrTypes.add(_this2.genArray(key, type));
         }
 
         if (isObject(type)) {
-          arrTypes.add(_this2.genObjcet(key, type));
+          arrTypes.add(_this2.genObjcet(key, type, optionalKeys));
         } else {
           arrTypes.add(type);
         }
@@ -736,7 +820,9 @@ function initOptions(options) {
     typeSuffix: "Type",
     typePrefix: "",
     indent: 2,
-    comment: false
+    comment: false,
+    optimizeArrayOptional: false,
+    genType: "type"
   };
   Object.assign(defaultOptions, options);
   return defaultOptions;
