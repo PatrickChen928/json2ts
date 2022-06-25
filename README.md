@@ -76,6 +76,10 @@ const result = json2ts(json, {
 `number`. Default：`2`. output indent format.
 #### comment
 `'inline' | 'block' | false`. Default：`false`. output with comment.
+#### optimizeArrayOptional
+`boolean`. Default：`false`. optimize Object in Array. e.g. `[{a: 1, b: 3}, {b: 2}]` will be `Array<{a: number; b?: number}>`
+#### genType
+`'type' | 'interface'`. Default：`type`. output `type` or `interface`
 
 ### parse
 

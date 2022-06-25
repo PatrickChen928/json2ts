@@ -76,6 +76,10 @@ const result = json2ts(json, {
 `number`。 Default：`2`。 输出格式化的缩进
 #### comment
 `'inline' | 'block' | false`。 默认`false`。是否输出注释
+#### optimizeArrayOptional
+`boolean`. 默认`false`。优化数组内对象的值是否可选。例如： `[{a: 1, b: 3}, {b: 2}]` will be `Array<{a: number; b?: number}>`
+#### genType
+`'type' | 'interface'`. 默认`type`. 输出 `type` 或 `interface`
 
 ### parse
 
