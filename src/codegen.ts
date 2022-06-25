@@ -1,5 +1,12 @@
 import type { TransformNodeType, CompileOptions } from './types';
-import { isArray, isObject, upperCaseFirstChat, stringifyObjAndSort } from './utils';
+import { 
+  isArray, 
+  isObject, 
+  upperCaseFirstChat, 
+  stringifyObjAndSort, 
+  optimizeArray,
+  isOptional
+} from './utils';
 
 class Generate {
   private ast: TransformNodeType
@@ -31,14 +38,14 @@ class Generate {
     return `${this.vars}type ${originName} = ${code}${this.options.semicolon ? ';' : ''}\n`;
   }
 
-  gen(typeValue: Record<string, string | Object> | Array<string | Object>) {
+  gen(typeValue: Record<string, string | Object> | Array<string | Object>, optionalKeys: string[] = []) {
     let code = `{\n`;
     for (const key in typeValue) {
       const type = typeValue[key];
       if (this.options.comment === 'block') {
         code += this.genBlockComment(key);
       }
-      code += this.genKey(key);
+      code += this.genKey(key, isOptional(optionalKeys, key));
       if (isObject(type)) {
         code += this.genObjcet(key, type);
       } else if (isArray(type)) {
@@ -66,8 +73,8 @@ class Generate {
     return `${this.prefix}${upperCaseFirstChat(key)}$${this.j}${this.suffix}`
   }
 
-  genKey(key: string) {
-    return `${this.genFormatChat(this.level)}${key}${this.options.required ? ': ' : '?: '}`;
+  genKey(key: string, optional = false) {
+    return `${this.genFormatChat(this.level)}${key}${this.options.required && !optional ? ': ' : '?: '}`;
   }
 
   genFormatChat(level: number) {
@@ -104,11 +111,11 @@ class Generate {
     return code;
   }
 
-  genObjcet(key:string, type: Record<string, string | Object>) {
+  genObjcet(key: string, type: Record<string, string | Object>, optionalKeys: string[] = []) {
     let code = '';
     this.level++;
     this.i++;
-    const objType = this.gen(type);
+    const objType = this.gen(type, optionalKeys);
     if (this.options.splitType) {
       code += this.genObjectCodeWithVar(objType, key, type as Record<string, string>);
     } else {
@@ -136,11 +143,17 @@ class Generate {
     let code = `Array< `;
     // 使用 set 过滤重复类型
     const arrTypes = new Set();
+    let optionalKeys = [];
+    if (this.options.optimizeArrayOptional) {
+      const { optionalKeys: keys, newTypes } = optimizeArray(types);
+      optionalKeys = keys;
+      types = newTypes;
+    }
     types.forEach(type => {
       if (isArray(type)) {
         arrTypes.add(this.genArray(key, type));
       } if (isObject(type)) {
-        arrTypes.add(this.genObjcet(key, type));
+        arrTypes.add(this.genObjcet(key, type, optionalKeys));
       } else {
         arrTypes.add(type);
       }

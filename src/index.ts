@@ -14,7 +14,8 @@ function initOptions(options: CompileOptions): CompileOptions {
     typeSuffix: 'Type',
     typePrefix: '',
     indent: 2,
-    comment: false
+    comment: false,
+    optimizeArrayOptional: false
   };
   Object.assign(defaultOptions, options)
   return defaultOptions;

@@ -47,3 +47,51 @@ export function stringifyObjAndSort(obj: Record<string, string>) {
   res += '}';
   return res;
 }
+
+export function optimizeArray(arrTypes: Array<any>, root: string = '') {
+  const optionalKeys: string[] = [];
+  const keyCountMap = {};
+  let objCount = 0;
+  const newTypes = [];
+  const typeObj = {};
+  console.log(arrTypes)
+  for (let i = 0; i < arrTypes.length; i++) {
+    const type = arrTypes[i];
+    if (isObject(type)) {
+      objCount++;
+      Object.keys(type).forEach(key => {
+        // if (isObject(type[key])) {
+        //   optimizeArray
+        // }
+        typeObj[key] = type[key];
+        if (keyCountMap[`${root}>${key}`]) {
+          keyCountMap[`${root}>${key}`] += 1;
+        } else {
+          keyCountMap[`${root}>${key}`] = 1;
+        }
+      });
+    } else {
+      newTypes.push(type);
+    }
+  }
+  Object.keys(keyCountMap).forEach(key => {
+    if (keyCountMap[key] < objCount) {
+      optionalKeys.push(key);
+    }
+  });
+  newTypes.push(typeObj);
+  return {
+    optionalKeys,
+    newTypes
+  };
+}
+
+export function isOptional(optionalKeys: string[], key: string, parent = '') {
+  const newKey = parent + '>' + key;
+  for (const optionalKey of optionalKeys) {
+    if (newKey === optionalKey) {
+      return true;
+    }
+  }
+  return false;
+}

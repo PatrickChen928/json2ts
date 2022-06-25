@@ -393,3 +393,30 @@ describe('empty array', () => {
     `)
   })
 });
+
+describe('array with different Object', () => {
+  const inputArray = `{
+    arr: [
+      {
+        a: 'name',
+        b: 'age'
+      },
+      {
+        a: 'name',
+      }
+    ]
+  }`;
+  it('expect', () => {
+    expect(json2ts(inputArray, { semicolon: true, parseArray: true, optimizeArrayOptional: true })).toMatchInlineSnapshot(`
+      "type Arr\$1Type = {
+        a: string;
+        b?: string;
+      };
+      
+      type Result\$0Type = {
+        arr: Array< Arr\$1Type >;
+      };
+      "
+    `)
+  })
+});

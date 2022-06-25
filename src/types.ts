@@ -6,7 +6,8 @@ export type CompileOptions = {
   typePrefix?: string;
   typeSuffix?: string;
   indent?: number;
-  comment?: 'inline' | 'block' | false | 'false'
+  comment?: 'inline' | 'block' | false | 'false';
+  optimizeArrayOptional?: boolean;
 }
 
 export type Position = {
