@@ -54,7 +54,6 @@ export function optimizeArray(arrTypes: Array<any>, root: string = '') {
   let objCount = 0;
   const newTypes = [];
   const typeObj = {};
-  console.log(arrTypes)
   for (let i = 0; i < arrTypes.length; i++) {
     const type = arrTypes[i];
     if (isObject(type)) {
@@ -79,7 +78,9 @@ export function optimizeArray(arrTypes: Array<any>, root: string = '') {
       optionalKeys.push(key);
     }
   });
-  newTypes.push(typeObj);
+  if (Object.keys(typeObj).length) {
+    newTypes.push(typeObj);
+  }
   return {
     optionalKeys,
     newTypes
