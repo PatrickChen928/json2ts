@@ -420,3 +420,25 @@ describe('array with different Object', () => {
     `)
   })
 });
+
+describe('array with different Object', () => {
+  const inputArray = `{
+    name: 'name',
+    obj: {
+      name: 'name',
+    }
+  }`;
+  it('expect', () => {
+    expect(json2ts(inputArray, { genType: 'interface' })).toMatchInlineSnapshot(`
+      "interface Obj\$1Type {
+        name: string
+      }
+      
+      interface Result\$0Type {
+        name: string
+        obj: Obj\$1Type
+      }
+      "
+    `)
+  })
+});

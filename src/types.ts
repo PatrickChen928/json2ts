@@ -8,6 +8,7 @@ export type CompileOptions = {
   indent?: number;
   comment?: 'inline' | 'block' | false | 'false';
   optimizeArrayOptional?: boolean;
+  genType?: 'type' | 'interface';
 }
 
 export type Position = {

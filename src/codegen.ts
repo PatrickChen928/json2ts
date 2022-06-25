@@ -35,7 +35,8 @@ class Generate {
     const originName = this.genName('Result');
     const typeValue = this.ast.typeValue!;
     const code = this.gen(typeValue);
-    return `${this.vars}type ${originName} = ${code}${this.options.semicolon ? ';' : ''}\n`;
+    const isInterface = this.options.genType === 'interface';
+    return `${this.vars}${this.options.genType} ${originName}${isInterface ? '' : ' ='} ${code}${this.options.semicolon ? ';' : ''}\n`;
   }
 
   gen(typeValue: Record<string, string | Object> | Array<string | Object>, optionalKeys: string[] = []) {
@@ -131,8 +132,9 @@ class Generate {
       return this.objValueMap.get(val);
     }
     const varName = this.genName(key);
+    const isInterface = this.options.genType === 'interface';
     this.objValueMap.set(val, varName);
-    this.vars += `type ${varName} = ${objType}${this.options.semicolon ? ';' : ''}\n\n`;
+    this.vars += `${this.options.genType} ${varName}${isInterface ? '' : ' ='} ${objType}${this.options.semicolon ? ';' : ''}\n\n`;
     return varName;
   }
 
