@@ -43,7 +43,7 @@ export function stringifyObjAndSort(obj: Record<string, string>) {
   for (let val of keys) {
     res += `${val}:${obj[val]},`;
   }
-  res.replace(/,$/, '');
+  res = res.replace(/,$/, '');
   res += '}';
   return res;
 }
