@@ -6,7 +6,13 @@
 
 json-parse > transform > codegen
 
-在线体验：https://chpshy.github.io/json2ts/index.html
+[在线链接](https://chpshy.github.io/json2ts/index.html)
+
+## vscode 插件
+
+[plugin](https://marketplace.visualstudio.com/items?itemName=cyly.json2ts-vsc&ssr=false#overview)
+
+[github](https://github.com/ChpShy/json2ts-vscode)
 
 ## Features
 

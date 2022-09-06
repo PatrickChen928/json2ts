@@ -6,7 +6,13 @@ Tranform JSON to TS TYPE by compiler
 
 `json-parse > transform > codegen`
 
-online link：https://chpshy.github.io/json2ts/index.html
+[online link](https://chpshy.github.io/json2ts/index.html)
+
+## vscode plugin
+
+[plugin](https://marketplace.visualstudio.com/items?itemName=cyly.json2ts-vsc&ssr=false#overview)
+
+[github](https://github.com/ChpShy/json2ts-vscode)
 
 ## Features
 
