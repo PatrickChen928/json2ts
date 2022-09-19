@@ -8,6 +8,8 @@ Tranform JSON to TS TYPE by compiler
 
 [online link](https://chpshy.github.io/json2ts/index.html)
 
+![](./assets/demo.png)
+
 ## vscode plugin
 
 [plugin](https://marketplace.visualstudio.com/items?itemName=cyly.json2ts-vsc&ssr=false#overview)
