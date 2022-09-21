@@ -1,6 +1,6 @@
-<center>
+<p style="text-align: center">
 <img src="./assets/jt.png" style="width: 120px;height: 120px;">
-</center>
+</p>
 
 # Json2ts
 
