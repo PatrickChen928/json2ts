@@ -1,12 +1,15 @@
-<p style="text-align: center">
-<img src="./assets/jt.png" style="width: 120px;height: 120px;">
+<p align="center">
+<img src="./assets/jt.png" height="150">
 </p>
 
-# Json2ts
+<h1 align="center">
+Json2ts
+</h1>
+<p align="center">
+Convert JSON to TS TYPE by compiler
+<p>
 
 English | [中文](./README.CN.md)
-
-Tranform JSON to TS TYPE by compiler
 
 `json-parse > transform > codegen`
 
