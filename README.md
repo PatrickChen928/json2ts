@@ -6,7 +6,7 @@
 Json2ts
 </h1>
 <p align="center">
-Convert JSON to TS TYPE by compiler
+Convert JSON to ts type by compiler
 <p>
 
 English | [中文](./README.CN.md)
