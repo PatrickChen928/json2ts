@@ -1,3 +1,9 @@
+## [0.1.4](https://github.com/ChpShy/json2ts/compare/v0.1.3...v0.1.4) (2022-06-25)
+
+### Bug Fixes
+- fix replace
+- fix compile number with digit
+
 ## [0.1.3](https://github.com/ChpShy/json2ts/compare/v0.1.2...v0.1.3) (2022-06-25)
 
 ### Bug Fixes
