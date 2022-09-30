@@ -18,6 +18,8 @@ import {
   VALUE_ILLEGAL_ERROR_MESSAGE
 } from './contant';
 
+const NUMBER_REGX = /^[-|+]?([0-9]+\.?\d*)/;
+
 function getCursor(context: ParserContext) {
   const { offset, column, line } = context;
   return { offset, column, line };
@@ -179,7 +181,7 @@ function parseKey(context: ParserContext) {
 }
 
 function parseNumber(context: ParserContext) {
-  const match = /^([0-9]*)/i.exec(context.source);
+  const match = NUMBER_REGX.exec(context.source);
   advanceBy(context, match[0].length);
   return match[1];
 }
@@ -210,7 +212,7 @@ function parseValue(context: ParserContext) {
   let value = null;
   let type = null;
   let code = context.source[0];
-  if (/^[0-9]/.test(code)) {
+  if (NUMBER_REGX.test(context.source)) {
     value = parseNumber(context);
     type = NUMBER_TYPE;
   } else if (code === '"' || code === '\'') {

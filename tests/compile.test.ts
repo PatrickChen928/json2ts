@@ -442,3 +442,33 @@ describe('array with different Object', () => {
     `)
   })
 });
+
+describe("parse number with digit", () => {
+
+  it('compile number with digit', () => {
+    expect(json2ts(`{num: 0.2}`)).toMatchInlineSnapshot(`
+      "type Result\$0Type = {
+        num: number
+      }
+      "
+    `)
+  })
+
+  it('compile number with -', () => {
+    expect(json2ts(`{num: -0.2}`)).toMatchInlineSnapshot(`
+      "type Result\$0Type = {
+        num: number
+      }
+      "
+    `)
+  })
+
+  it('compile number with +', () => {
+    expect(json2ts(`{num: +0.2}`)).toMatchInlineSnapshot(`
+      "type Result\$0Type = {
+        num: number
+      }
+      "
+    `)
+  })
+})
