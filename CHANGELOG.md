@@ -1,4 +1,4 @@
-## [0.1.4](https://github.com/ChpShy/json2ts/compare/v0.1.3...v0.1.4) (2022-06-25)
+## [0.1.4](https://github.com/ChpShy/json2ts/compare/v0.1.3...v0.1.4) (2022-09-30)
 
 ### Bug Fixes
 - fix replace
