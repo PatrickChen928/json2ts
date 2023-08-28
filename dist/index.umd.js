@@ -814,7 +814,7 @@
         var _this2 = this;
 
         if (types.length === 0) {
-          return "Array< unknow >";
+          return "Array< unknown >";
         }
 
         var code = "Array< ";
