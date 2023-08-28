@@ -140,7 +140,7 @@ class Generate {
 
   genArray(key: string, types: Array<any>) {
     if (types.length === 0) {
-      return 'Array< unknow >';
+      return 'Array< unknown >';
     }
     let code = `Array< `;
     // 使用 set 过滤重复类型
