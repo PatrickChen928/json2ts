@@ -1,25 +1,25 @@
 # Json2ts
 
-中文 | [English](./README.md) 
+中文 | [English](./README.md)
 
-使用`编译原理`，解析Json，输出 TS 类型
+使用`编译原理`，解析 Json，输出 TS 类型
 
 json-parse > transform > codegen
 
-[在线链接](https://chpshy.github.io/json2ts/index.html)
+[在线链接](https://patrickchen928.github.io/json2ts/index.html)
 
 ## vscode 插件
 
 [plugin](https://marketplace.visualstudio.com/items?itemName=cyly.json2ts-vsc&ssr=false#overview)
 
-[github](https://github.com/ChpShy/json2ts-vscode)
+[github](https://github.com/PatrickChen928/json2ts-vscode)
 
 ## Features
 
 - 支持层级嵌套
 - 支持数组解析
 - 支持行内和换行的注释解析
-- 支持key值无引号模式
+- 支持 key 值无引号模式
 
 ## Install
 
@@ -30,7 +30,7 @@ npm i @cyly/json2ts
 
 yarn add @cyly/json2ts
 
-// or 
+// or
 
 pnpm i @cyly/json2ts
 
@@ -44,10 +44,11 @@ json2ts.json2ts(`{ name: 'apha' }`, {
 ```
 
 ## Document
+
 ### json2ts
 
 ```javascript
-import json2ts from '@cyly/json2ts';
+import json2ts from '@cyly/json2ts'
 
 const json = `{
   "a": 123,
@@ -55,42 +56,59 @@ const json = `{
     "c": "123"
   },
   d: [1, 2, 3]
-}`;
+}`
 
 const result = json2ts(json, {
-    semicolon: true
-});
+  semicolon: true,
+})
 ```
 
 ### options
+
 #### splitType
-`boolean`。默认：`true`。是否分离对象，分离的话，会将json内的对象作为单独的 type 类型
+
+`boolean`。默认：`true`。是否分离对象，分离的话，会将 json 内的对象作为单独的 type 类型
 
 #### parseArray
-`boolean`。默认：`false`。是否解析数组。默认返回Array< any >
+
+`boolean`。默认：`false`。是否解析数组。默认返回 Array< any >
 
 #### required
+
 `boolean`。默认：`true`。是否都是必须。设为`false`则为：`{ a?: number}`;
+
 #### semicolon
+
 `boolean`。默认：`false`。是否使用分号结尾。设为`true`则为：`{a: number; b: string;}`
 
 #### typePrefix
+
 `string`。默认：''。命名的前缀。如设为`User`：`UserKeyName$0`
+
 #### typeSuffix
+
 `string`。默认：`Type`。命名的后缀。如设为`Temp`：`KeyName$0Temp`
+
 #### indent
+
 `number`。 Default：`2`。 输出格式化的缩进
+
 #### comment
+
 `'inline' | 'block' | false`。 默认`false`。是否输出注释
+
 #### optimizeArrayOptional
+
 `boolean`. 默认`false`。优化数组内对象的值是否可选。例如： `[{a: 1, b: 3}, {b: 2}]` will be `Array<{a: number; b?: number}>`
+
 #### genType
+
 `'type' | 'interface'`. 默认`type`. 输出 `type` 或 `interface`
 
 ### parse
 
 ```javascript
-import { parse } from '@cyly/json2ts';
+import { parse } from '@cyly/json2ts'
 
 const json = `{
   "a": 123,
@@ -98,15 +116,15 @@ const json = `{
     "c": "123"
   },
   d: [1, 2, 3]
-}`;
+}`
 
-const ast = parse(json);
+const ast = parse(json)
 ```
 
 ### traverser
 
 ```javascript
-import { traverser, STRING_TYPE, ARRAY_TYPE } from '@cyly/json2ts';
+import { traverser, STRING_TYPE, ARRAY_TYPE } from '@cyly/json2ts'
 
 const json = `{
   "a": 123,
@@ -114,20 +132,20 @@ const json = `{
     "c": "123"
   },
   d: [1, 2, 3]
-}`;
+}`
 
-const ast = parse(json);
+const ast = parse(json)
 
 traverser(ast, {
   [STRING_TYPE]: {
     entry(node, parent) {},
-    exit(node, parent) {}
+    exit(node, parent) {},
   },
   [ARRAY_TYPE]: {
     entry(node, parent) {},
-    exit(node, parent) {}
-  }
-});
+    exit(node, parent) {},
+  },
+})
 ```
 
 ```javascript
@@ -138,7 +156,7 @@ traverser(ast, {
     "c": "123"
   },
   d: [1, 2, 3]
-} 
+}
 
 =>
 

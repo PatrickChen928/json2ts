@@ -1,4 +1,4 @@
-lockfileVersion: 5.3
+lockfileVersion: 5.4
 
 specifiers:
   '@babel/core': ^7.17.8
@@ -21,17 +21,17 @@ specifiers:
 devDependencies:
   '@babel/core': 7.17.8
   '@babel/preset-env': 7.16.11_@babel+core@7.17.8
-  '@rollup/plugin-babel': 5.3.1_@babel+core@7.17.8+rollup@2.70.1
+  '@rollup/plugin-babel': 5.3.1_b3dmjfji46fxi4pypym34a4m6q
   '@rollup/plugin-commonjs': 21.0.2_rollup@2.70.1
   '@vitest/ui': 0.7.4
   bumpp: 7.1.1
   c8: 7.11.0
   esbuild: 0.14.27
   rollup: 2.70.1
-  rollup-plugin-babel: 4.4.0_@babel+core@7.17.8+rollup@2.70.1
+  rollup-plugin-babel: 4.4.0_b3dmjfji46fxi4pypym34a4m6q
   rollup-plugin-clear: 2.0.7
-  rollup-plugin-dts: 4.2.0_rollup@2.70.1+typescript@4.6.2
-  rollup-plugin-esbuild: 4.8.2_esbuild@0.14.27+rollup@2.70.1
+  rollup-plugin-dts: 4.2.0_xbcrmlcbgq2dbmgm4spsftqsay
+  rollup-plugin-esbuild: 4.8.2_oipjqu5ysbif3k5dhnzkhxs3fi
   typescript: 4.6.2
   vite: 2.8.6
   vitest: 0.7.4_@vitest+ui@0.7.4+c8@7.11.0
@@ -334,6 +334,8 @@ packages:
     resolution: {integrity: sha512-BoHhDJrJXqcg+ZL16Xv39H9n+AqJ4pcDrQBGZN+wHxIysrLZ3/ECwCBUch/1zUNhnsXULcONU3Ei5Hmkfk6kiQ==}
     engines: {node: '>=6.0.0'}
     hasBin: true
+    dependencies:
+      '@babel/types': 7.17.0
     dev: true
 
   /@babel/plugin-bugfix-safari-id-destructuring-collision-in-function-expression/7.16.7_@babel+core@7.17.8:
@@ -1230,7 +1232,7 @@ packages:
     resolution: {integrity: sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==}
     dev: true
 
-  /@rollup/plugin-babel/5.3.1_@babel+core@7.17.8+rollup@2.70.1:
+  /@rollup/plugin-babel/5.3.1_b3dmjfji46fxi4pypym34a4m6q:
     resolution: {integrity: sha512-WFfdLWU/xVWKeRQnKmIAQULUI7Il0gZnBIH/ZFO069wYIfPu+8zrfp/KMW0atmELoRDq8FbiP3VCss9MhCut7Q==}
     engines: {node: '>= 10.0.0'}
     peerDependencies:
@@ -2366,7 +2368,7 @@ packages:
       glob: 7.2.0
     dev: true
 
-  /rollup-plugin-babel/4.4.0_@babel+core@7.17.8+rollup@2.70.1:
+  /rollup-plugin-babel/4.4.0_b3dmjfji46fxi4pypym34a4m6q:
     resolution: {integrity: sha512-Lek/TYp1+7g7I+uMfJnnSJ7YWoD58ajo6Oarhlex7lvUce+RCKRuGRSgztDO3/MF/PuGKmUL5iTHKf208UNszw==}
     deprecated: This package has been deprecated and is no longer maintained. Please use @rollup/plugin-babel.
     peerDependencies:
@@ -2385,7 +2387,7 @@ packages:
       rimraf: 2.7.1
     dev: true
 
-  /rollup-plugin-dts/4.2.0_rollup@2.70.1+typescript@4.6.2:
+  /rollup-plugin-dts/4.2.0_xbcrmlcbgq2dbmgm4spsftqsay:
     resolution: {integrity: sha512-lx6irWVhz/x4//tIqRhzk4FOqGQ0n37ZM2wpPCn4uafl/EmiV92om7ZdAsq7Bzho6C+Xh5GfsyuP9H+Udv72Lg==}
     engines: {node: '>=v12.22.10'}
     peerDependencies:
@@ -2399,7 +2401,7 @@ packages:
       '@babel/code-frame': 7.16.7
     dev: true
 
-  /rollup-plugin-esbuild/4.8.2_esbuild@0.14.27+rollup@2.70.1:
+  /rollup-plugin-esbuild/4.8.2_oipjqu5ysbif3k5dhnzkhxs3fi:
     resolution: {integrity: sha512-wsaYNOjzTb6dN1qCIZsMZ7Q0LWiPJklYs2TDI8vJA2LUbvtPUY+17TC8C0vSat3jPMInfR9XWKdA7ttuwkjsGQ==}
     engines: {node: '>=12'}
     peerDependencies:

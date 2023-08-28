@@ -13,7 +13,7 @@ English | [中文](./README.CN.md)
 
 `json-parse > transform > codegen`
 
-[online link](https://chpshy.github.io/json2ts/index.html)
+[online link](https://patrickchen928.github.io/json2ts/index.html)
 
 ![](./assets/demo.png)
 
@@ -21,7 +21,7 @@ English | [中文](./README.CN.md)
 
 [plugin](https://marketplace.visualstudio.com/items?itemName=cyly.json2ts-vsc&ssr=false#overview)
 
-[github](https://github.com/ChpShy/json2ts-vscode)
+[github](https://github.com/PatrickChen928/json2ts-vscode)
 
 ## Features
 
@@ -39,7 +39,7 @@ npm i @cyly/json2ts
 
 yarn add @cyly/json2ts
 
-// or 
+// or
 
 pnpm i @cyly/json2ts
 
@@ -53,10 +53,11 @@ json2ts.json2ts(`{ name: 'apha' }`, {
 ```
 
 ## Document
+
 ### json2ts
 
 ```javascript
-import json2ts from '@cyly/json2ts';
+import json2ts from '@cyly/json2ts'
 
 const json = `{
   "a": 123,
@@ -64,42 +65,59 @@ const json = `{
     "c": "123"
   },
   d: [1, 2, 3]
-}`;
+}`
 
 const result = json2ts(json, {
-    semicolon: true
-});
+  semicolon: true,
+})
 ```
 
 ### options
+
 #### splitType
+
 `boolean`. Default：`true`. split Object, if `false` ，will define new `TYPE`, then use this `TYPE` name in the result
 
 #### parseArray
-`boolean`. Default：`false`. parse array. `false` will return  `Array< any >`, otherwise return `Array< number | string ... >`
+
+`boolean`. Default：`false`. parse array. `false` will return `Array< any >`, otherwise return `Array< number | string ... >`
 
 #### required
+
 `boolean`. Default：`true`. key is required or not. if `false` will return `{ a?: number}`
+
 #### semicolon
+
 `boolean`. Default：`false`. with semicolon end. if `true` will return `{ a: number; b: string; }`, otherwise will return `{ a: number b: string }`
 
 #### typePrefix
+
 `string`. Default：''. type name prefix.exp: config `User`, name will be `UserKeyName$0`
+
 #### typeSuffix
+
 `string`. Default：`Type`. type name suffix. exp: config `Temp`,name will be `KeyName$0Temp`
+
 #### indent
+
 `number`. Default：`2`. output indent format.
+
 #### comment
+
 `'inline' | 'block' | false`. Default：`false`. output with comment.
+
 #### optimizeArrayOptional
+
 `boolean`. Default：`false`. optimize Object in Array. e.g. `[{a: 1, b: 3}, {b: 2}]` will be `Array<{a: number; b?: number}>`
+
 #### genType
+
 `'type' | 'interface'`. Default：`type`. output `type` or `interface`
 
 ### parse
 
 ```javascript
-import { parse } from '@cyly/json2ts';
+import { parse } from '@cyly/json2ts'
 
 const json = `{
   "a": 123,
@@ -107,15 +125,15 @@ const json = `{
     "c": "123"
   },
   d: [1, 2, 3]
-}`;
+}`
 
-const ast = parse(json);
+const ast = parse(json)
 ```
 
 ### traverser
 
 ```javascript
-import { traverser, STRING_TYPE, ARRAY_TYPE } from '@cyly/json2ts';
+import { traverser, STRING_TYPE, ARRAY_TYPE } from '@cyly/json2ts'
 
 const json = `{
   "a": 123,
@@ -123,20 +141,20 @@ const json = `{
     "c": "123"
   },
   d: [1, 2, 3]
-}`;
+}`
 
-const ast = parse(json);
+const ast = parse(json)
 
 traverser(ast, {
   [STRING_TYPE]: {
     entry(node, parent) {},
-    exit(node, parent) {}
+    exit(node, parent) {},
   },
   [ARRAY_TYPE]: {
     entry(node, parent) {},
-    exit(node, parent) {}
-  }
-});
+    exit(node, parent) {},
+  },
+})
 ```
 
 ```javascript
@@ -147,7 +165,7 @@ traverser(ast, {
     "c": "123"
   },
   d: [1, 2, 3]
-} 
+}
 
 =>
 

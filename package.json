@@ -26,13 +26,13 @@
     "types/"
   ],
   "author": "cyly cp786156072@163.com",
-  "homepage": "https://chpshy.github.io/json2ts/index.html",
+  "homepage": "https://patrickchen928.github.io/json2ts/index.html",
   "bugs": {
-    "url": "https://github.com/ChpShy/json2ts/issues"
+    "url": "https://github.com/PatrickChen928/json2ts/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ChpShy/json2ts.git"
+    "url": "git+https://github.com/PatrickChen928/json2ts.git"
   },
   "license": "MIT",
   "exports": {
