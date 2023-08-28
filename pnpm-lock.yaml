@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@antfu/ni': ^0.21.6
   '@babel/core': ^7.17.8
   '@babel/preset-env': ^7.16.11
   '@rollup/plugin-babel': ^5.3.1
@@ -17,6 +18,9 @@ specifiers:
   typescript: ^4.1
   vite: ^2.8.6
   vitest: ^0.7.4
+
+dependencies:
+  '@antfu/ni': 0.21.6
 
 devDependencies:
   '@babel/core': 7.17.8
@@ -44,6 +48,11 @@ packages:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.4
     dev: true
+
+  /@antfu/ni/0.21.6:
+    resolution: {integrity: sha512-Hj0BKIOspbo+OsPT5mjONeqpuVb4bxp9jdJ4p/b5GxgYNIqJjBcJdp0DEON7CJflKoWuHf7I52wO5kOJJ4DveQ==}
+    hasBin: true
+    dev: false
 
   /@babel/code-frame/7.16.7:
     resolution: {integrity: sha512-iAXqUn8IIeBTNd72xsFlgaXHkMBMt6y4HJp1tIaK465CWLT/fG1aqB7ykr95gHHmlBdGbFeWWfyB4NJJ0nmeIg==}
