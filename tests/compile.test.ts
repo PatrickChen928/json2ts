@@ -387,7 +387,7 @@ describe('empty array', () => {
     expect(json2ts(inputArray, { semicolon: true, parseArray: true})).toMatchInlineSnapshot(`
       "type Result\$0Type = {
         name: string;
-        arr: Array< unknow >;
+        arr: Array< unknown >;
       };
       "
     `)
