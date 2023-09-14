@@ -1,5 +1,5 @@
 import { assert, describe, expect, test, it } from 'vitest';
-import json2ts from '../src';
+import json2ts, { VALUE_ILLEGAL_ERROR_MESSAGE } from '../src';
 
 // Edit an assertion and save to see HMR in action
 
@@ -472,3 +472,29 @@ describe("parse number with digit", () => {
     `)
   })
 })
+
+describe("scientific notation", () => {
+  it("compile scientific notation", () => {
+    expect(json2ts(`{num: 3.14E+10}`)).toMatchInlineSnapshot(`
+      "type Result\$0Type = {
+        num: number
+      }
+      "
+    `);
+  });
+
+  it("compile scientific notation with -", () => {
+    expect(json2ts(`{num: 2.71828e-05}`)).toMatchInlineSnapshot(`
+      "type Result\$0Type = {
+        num: number
+      }
+      "
+    `);
+  });
+
+  it("JSON does not support scientific notation starting with decimal point", () => {
+    expect(() => json2ts(`{num: .71828e-05}`)).toThrowError(
+      VALUE_ILLEGAL_ERROR_MESSAGE
+    );
+  });
+});
