@@ -69,7 +69,7 @@
   _exports.COMMENT_ERROR_MESSAGE = COMMENT_ERROR_MESSAGE;
   var VALUE_ILLEGAL_ERROR_MESSAGE = "value is illegal";
   _exports.VALUE_ILLEGAL_ERROR_MESSAGE = VALUE_ILLEGAL_ERROR_MESSAGE;
-  var NUMBER_REGX = /^[-|+]?([0-9]+\.?\d*)/;
+  var NUMBER_REGX = /^[-+]?([0-9]+\.?\d*)([Ee][-+]?[0-9]+)?/;
 
   function getCursor(context) {
     var offset = context.offset,

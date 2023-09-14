@@ -30,7 +30,7 @@ var NEXT_COMMENT = "$NEXT_COMMENT$";
 var ARRAY_ERROR_MESSAGE = "array should be closed";
 var COMMENT_ERROR_MESSAGE = "comment is illegal";
 var VALUE_ILLEGAL_ERROR_MESSAGE = "value is illegal";
-var NUMBER_REGX = /^[-|+]?([0-9]+\.?\d*)/;
+var NUMBER_REGX = /^[-+]?([0-9]+\.?\d*)([Ee][-+]?[0-9]+)?/;
 
 function getCursor(context) {
   var offset = context.offset,
