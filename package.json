@@ -18,8 +18,7 @@
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
     "coverage": "vitest run --coverage",
-    "release": "bumpp --commit --push --tag && pnpm publish",
-    "prepublishOnly": "nr build"
+    "release": "bumpp --commit --push --tag && pnpm publish"
   },
   "files": [
     "dist/",
