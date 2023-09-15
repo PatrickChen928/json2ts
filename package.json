@@ -1,6 +1,6 @@
 {
   "name": "@cyly/json2ts",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "transform json to ts",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
