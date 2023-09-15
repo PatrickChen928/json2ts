@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "build": "rollup -c",
-    "test": "vitest",
+    "test": "./node_modules/vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
     "coverage": "vitest run --coverage",
