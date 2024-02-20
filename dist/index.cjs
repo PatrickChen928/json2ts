@@ -202,7 +202,8 @@ function parseNumber(context) {
 }
 
 function parseString(context) {
-  var match = /^["|']([^"|']*)/i.exec(context.source);
+  var s = context.source[0];
+  var match = new RegExp("^".concat(s, "(.[^").concat(s, "]*)")).exec(context.source);
   advanceBy(context, match[0].length + 1);
   return match[1];
 }
