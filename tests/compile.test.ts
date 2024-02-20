@@ -98,6 +98,17 @@ describe('array parse', () => {
       };
       "
     `)
+
+    expect(json2ts(`{"foo": [{"bar": ""}]}`, {parseArray: true})).toMatchInlineSnapshot(`
+    "type Foo\$1Type = {
+      bar: string
+    }
+    
+    type Result\$0Type = {
+      foo: Array< Foo\$1Type >
+    }
+    "
+  `);
   })
 });
 
