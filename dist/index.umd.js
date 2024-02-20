@@ -237,8 +237,8 @@
 
   function parseString(context) {
     var s = context.source[0];
-    var match = new RegExp("^".concat(s, "(.[^").concat(s, "]*)")).exec(context.source);
-    advanceBy(context, match[0].length + 1);
+    var match = new RegExp("^".concat(s, "((?:\\.|[^\\").concat(s, "])*)").concat(s)).exec(context.source);
+    advanceBy(context, match[0].length);
     return match[1];
   }
 
