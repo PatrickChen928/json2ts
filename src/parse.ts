@@ -187,7 +187,9 @@ function parseNumber(context: ParserContext) {
 }
 
 function parseString(context: ParserContext) {
-  const match = /^["|']([^"|']*)/i.exec(context.source);
+  const s = context.source[0];
+  //TODO: 处理转义字符 \" \'
+  const match = new RegExp(`^${s}(.[^${s}]*)`).exec(context.source);
   advanceBy(context, match[0].length + 1);
   return match[1];
 }

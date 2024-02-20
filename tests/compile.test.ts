@@ -498,3 +498,20 @@ describe("scientific notation", () => {
     );
   });
 });
+
+describe("parse with quotes", () => {
+  it("compile with quotes", () => {
+    expect(json2ts(`{ "foo": "''" }`)).toMatchInlineSnapshot(`
+      "type Result\$0Type = {
+        foo: string
+      }
+      "
+    `);
+    expect(json2ts(`{ "foo": "'', ''" }	`)).toMatchInlineSnapshot(`
+      "type Result\$0Type = {
+        foo: string
+      }
+      "
+    `);
+  });
+});
