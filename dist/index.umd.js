@@ -138,7 +138,7 @@
   }
 
   function advanceSpaces(context) {
-    var match = /^[\t\r\n\f ]+/.exec(context.source);
+    var match = /^[\r\n\f ]+/.exec(context.source);
 
     if (match && match[0]) {
       advanceBy(context, match[0].length);
@@ -192,7 +192,12 @@
             lastLine = lastNode.loc.end.line;
           }
 
-          nodes.push(parseComment(context, lastLine));
+          var comment = parseComment(context, lastLine);
+
+          if (comment) {
+            nodes.push(comment);
+          }
+
           advanceSpaces(context);
         } else {
           throw new Error(COMMENT_ERROR_MESSAGE);
@@ -314,7 +319,11 @@
 
       if (context.source.indexOf("//") === 0) {
         var cv = parseComment(context, lastLine);
-        nodes.push(cv);
+
+        if (cv) {
+          nodes.push(cv);
+        }
+
         advanceSpaces(context);
       } else {
         var itemValue = parseData(context, ARRAY_ITEM);
@@ -329,13 +338,18 @@
   function parseComment(context, lastLine) {
     var currLine = getCursor(context).line;
     var key = lastLine === currLine ? LAST_COMMENT : NEXT_COMMENT;
-    var match = /^\/\/\s*(.[^\t\n\r\f]*)/i.exec(context.source);
+    var match = /^\/\/(.*)?(?=\n)/i.exec(context.source);
     var start = getCursor(context);
     var comment = match[1];
     advanceBy(context, match[0].length);
+
+    if (!comment || !comment.trim()) {
+      return null;
+    }
+
     return {
       key: key,
-      value: comment,
+      value: comment.trim(),
       type: COMMENT_TYPE,
       loc: getLoc(context, start)
     };
