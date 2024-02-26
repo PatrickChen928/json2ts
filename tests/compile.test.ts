@@ -324,8 +324,32 @@ describe('comment block', () => {
       };
       "
     `)
-  })
-});
+    expect(json2ts(`{
+      "foo": [{
+        "bar": 1 //
+        "baz": 2
+      }],
+    }`, { semicolon: true, parseArray: true,  indent: 2, comment: 'block' })).toMatchInlineSnapshot(`
+      "type Foo\$1Type = {
+        bar: number;
+        baz: number;
+      };
+      
+      type Result\$0Type = {
+        foo: Array< Foo\$1Type >;
+      };
+      "
+    `)
+    expect(json2ts(`{
+      "foo": 1 //
+    }`, { semicolon: true, parseArray: true,  indent: 2, comment: 'block' })).toMatchInlineSnapshot(`
+      "type Result\$0Type = {
+        foo: number;
+      };
+      "
+    `)
+  });
+})
 
 describe('comment inline', () => {
   const inputArray = `{
